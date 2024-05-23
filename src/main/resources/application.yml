@@ -1,0 +1,18 @@
+#???8010
+server:
+ port: 8010
+ #address: 116.204.36.31
+   # swagger端口号
+
+#?????mysql????root???123456
+spring:
+  datasource:
+    username: hou # 数据库账号
+    password: '123456' # 数据库密码
+    url: jdbc:mysql://localhost:3306/chain?serverTimezone=GMT%2B8&characterEncoding=utf-8 # 数据库IP和端口
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+# mybatis-plus??
+mybatis-plus:
+  # xml????
+  mapper-locations: classpath:mapper/*.xml
