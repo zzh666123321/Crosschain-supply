@@ -23,13 +23,25 @@ import org.springframework.web.bind.annotation.*;
 public class CrosschainController {
 
         @Autowired
-        CrosschainService CrosschainService;
+        CrosschainService crosschainService;
 
         @ApiOperation(value="查询跨链结果")
-        @GetMapping("/queryCrossRet/{oxId}")
-        public CommonResp  doCross(@RequestBody CrossReq crossreq){
-            return CrosschainService.doCross(crossreq);
+        @GetMapping("/queryAllCrossTx")
+        public CommonResp QueryChainInfo(){
+            return crosschainService.queryCrossTx();
         }
-    }
+
+        @ApiOperation(value = "查询某个交易的具体信息")
+        @GetMapping("/queryTxInfo")
+        public CommonResp queryTxInfo(
+                @RequestParam(required = false) String txHash,
+                @RequestParam(required = false) Integer txId
+
+        ) {
+            // 调用服务层方法，根据参数查询链的信息
+            return crosschainService.queryTxInfo(txHash, txId);
+        }
+
+}
 
 

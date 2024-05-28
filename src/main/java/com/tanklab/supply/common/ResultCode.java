@@ -2,7 +2,7 @@ package com.tanklab.supply.common;
 
 public enum ResultCode {
     TEST("0","Test Msg"),
-    FAILURE("1009","No contracts found with the provided criteria."),
+    FAILURE("1009","No datas found with the provided criteria."),
     ERROR("1000","Unknown Error Occurred."),
     SUCCESS("1001","Request Successfully!"),
     USER_EMAIL_EXIST("1002","User Email Exist!"),
