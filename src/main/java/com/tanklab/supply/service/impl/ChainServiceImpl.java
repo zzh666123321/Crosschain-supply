@@ -113,7 +113,9 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
 
                 // 查询该链的块高
                 BigInteger blockHeight = web3j.ethBlockNumber().send().getBlockNumber();
-                chainresp.setData(blockHeight);
+                JSONObject heightinfo = new JSONObject();
+                heightinfo.put("heightinfo", blockHeight);
+                chainresp.setData(heightinfo);
             } catch (IOException e) {
                 e.printStackTrace();
                 chainresp.setData("Failed to connect to the blockchain node.");
@@ -131,7 +133,9 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             BigInteger blockHeight = JsonParser.parseString(logs).getAsJsonObject().getAsJsonObject("block")
                     .getAsJsonObject("header")
                     .get("block_height").getAsBigInteger();
-            chainresp.setData(blockHeight);
+            JSONObject heightinfo = new JSONObject();
+            heightinfo.put("heightinfo", blockHeight);
+            chainresp.setData(heightinfo);
         } else {
             String targetUrl = "http://116.204.36.31:8000/api/blockChain/blockHeight";
             try {
@@ -147,7 +151,9 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 }
                 in.close();
                 BigInteger blockHeight = BigInteger.valueOf(Long.parseLong(response.toString()));
-                chainresp.setData(blockHeight);
+                JSONObject heightinfo = new JSONObject();
+                heightinfo.put("heightinfo", blockHeight);
+                chainresp.setData(heightinfo);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -299,7 +305,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
 
     public CommonResp checkNewBlock(ChainReq chainreq) {//////////////////
         CommonResp queryNewBlock = new CommonResp();
-        JSONObject blocks = new JSONObject();
+        JSONArray blocks = new JSONArray();
         if (String.valueOf(chainreq.getChainIP()) == "ETH") {
             BigInteger blockHeight = new BigInteger("0");
             try {
@@ -358,7 +364,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                     blockInfo.put("minerAddress", minerAddress);
 
                     j++;
-                    blocks.put(String.valueOf(j), blockInfo);
+                    blocks.add(blockInfo);
 
                     if (j == 10)
                         break;
@@ -420,7 +426,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 blockInfo.put("txRoot", txRoot);
 
                 j++;
-                blocks.put(String.valueOf(j), blockInfo);
+                blocks.add(blockInfo);
 
                 if (j == 10)
                     break;
@@ -495,15 +501,16 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 blockInfo.put("signerPubkey", signerPubkey);
 
                 j++;
-                blocks.put(String.valueOf(j), blockInfo);
+                blocks.add(blockInfo);
 
                 if (j == 10)
                     break;
             }
         }
-
+        JSONObject tenblocks = new JSONObject();
+        tenblocks.put("tenBlocksInfo", blocks);
         queryNewBlock.setRet(ResultCode.SUCCESS);
-        queryNewBlock.setData(blocks);
+        queryNewBlock.setData(tenblocks);
 
         return queryNewBlock;
     }
