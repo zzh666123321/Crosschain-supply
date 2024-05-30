@@ -14,14 +14,18 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2024-03-25
  */
 public interface ChainService extends IService<Chain> {
-//    CommonResp checkChainnewblock(ChainReq chainreq);
-//    CommonResp checkBlockInfo(BlockhashReq blockhashreq);
-//
-//    CommonResp checkHeightInfo(BlockheightReq blockheightreq);
-//    CommonResp checkTxInfo(TxhashReq txhashreq);
-//
-//    CommonResp addChain(AddChainReq addchainreq);
-//    CommonResp checkChainmaker(ChainMakerReq chainmakerreq);
+    CommonResp checkChainnewblock(ChainReq chainreq);
+
+    // CommonResp checkBlockInfo(BlockhashReq blockhashreq);
+
+    CommonResp checkHeightInfo(BlockheightReq blockheightreq);
+
+    CommonResp checkNewBlock(ChainReq chainreq);
+
+    CommonResp checkTxInfo(TxhashReq txhashreq);
+    //
+    // CommonResp addChain(AddChainReq addchainreq);
+    // CommonResp checkChainmaker(ChainMakerReq chainmakerreq);
 
     CommonResp querychainInfo();
 
