@@ -23,7 +23,7 @@ public class SSHConfig {
     private static int timeout = 60000;
     private static ChannelExec channelExec;
 
-    public static void connect() throws Exception {
+    public static void connect(String ip) throws Exception {
         // System.out.println("连接到服务器:"+ssh_ip+",
         // 登录名为："+ssh_username+",端口号为："+ssh_port);
         Channel channel = null;
@@ -31,7 +31,7 @@ public class SSHConfig {
         // 连接服务器，如果端口小于等于0，采用默认端口，如果大于0，使用指定的端口
 
         // 采用指定的端口连接服务器
-        session = jsch.getSession(ssh_username, ssh_ip, ssh_port);
+        session = jsch.getSession(ssh_username, ip, ssh_port);
 
         // 如果服务器连不上，则抛出异常
         if (session == null) {
