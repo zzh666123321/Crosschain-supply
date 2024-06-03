@@ -96,8 +96,8 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
 
     public CommonResp checkChainnewblock(ChainReq chainreq) {////////////
         CommonResp chainresp = new CommonResp();
-
-        if (String.valueOf(chainreq.getChainIP()) == "ETH") {
+        // System.out.println(chainreq.getChainIP());
+        if (chainreq.getChainIP().equals("ETH")) {
             try {
                 // 创建 OkHttpClient 实例，并设置超时时间
                 OkHttpClient.Builder builder = new OkHttpClient.Builder()
@@ -120,7 +120,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 e.printStackTrace();
                 chainresp.setData("Failed to connect to the blockchain node.");
             }
-        } else if (String.valueOf(chainreq.getChainIP()) == "ChainMaker") {
+        } else if (chainreq.getChainIP().equals("ChainMaker")) {
             String logs = "";
             try {
                 SSHConfig.connect();
@@ -166,7 +166,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
         CommonResp queryBlockInfoResp = new CommonResp();
         // 用块高来查询
         // 查询指定块高的区块信息
-        if (String.valueOf(blockheightReq.getChainIP()) == "ETH") {
+        if (blockheightReq.getChainIP().equals("ETH")) {
             Web3j web3j = Web3j.build(new HttpService(blockheightReq.getChainIP())); // 替换为你的节点地址
             try {
                 DefaultBlockParameter blockParameter = new DefaultBlockParameterNumber(
@@ -206,7 +206,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             } catch (IOException e) {
                 queryBlockInfoResp.setData("Failed to connect to the blockchain node.");
             }
-        } else if (String.valueOf(blockheightReq.getChainIP()) == "ChainMaker") {
+        } else if (blockheightReq.getChainIP().equals("ChainMaker")) {
             String logs = "";
             try {
                 SSHConfig.connect();
@@ -273,7 +273,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             JsonObject headerJsonObj = JsonParser.parseString(logs).getAsJsonObject().getAsJsonObject("Header");
             BigInteger blockHeight = headerJsonObj.get("Height").getAsBigInteger();
             String blockHash = JsonParser.parseString(logs).getAsJsonObject().get("BlockHash").getAsString();
-            BigInteger timeStamp = headerJsonObj.get("Time").getAsBigInteger();
+            String timeStamp = headerJsonObj.get("Time").getAsString();
             BigInteger blockSize = JsonParser.parseString(logs).getAsJsonObject().get("BlockSize").getAsBigInteger();
             BigInteger transactionCount = JsonParser.parseString(logs).getAsJsonObject().getAsJsonObject("Body")
                     .get("TransactionsCount").getAsBigInteger();
@@ -306,7 +306,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
     public CommonResp checkNewBlock(ChainReq chainreq) {//////////////////
         CommonResp queryNewBlock = new CommonResp();
         JSONArray blocks = new JSONArray();
-        if (String.valueOf(chainreq.getChainIP()) == "ETH") {
+        if (chainreq.getChainIP().equals("ETH")) {
             BigInteger blockHeight = new BigInteger("0");
             try {
                 // 创建 OkHttpClient 实例，并设置超时时间
@@ -328,7 +328,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 e.printStackTrace();
             }
             int j = 0;
-            for (BigInteger i = blockHeight; i.compareTo(blockHeight) >= 0; i = i.subtract(new BigInteger("1"))) {
+            for (BigInteger i = blockHeight; i.compareTo(BigInteger.ZERO) >= 0; i = i.subtract(new BigInteger("1"))) {
                 Web3j web3j = Web3j.build(new HttpService(chainreq.getChainIP())); // 替换为你的节点地址
                 try {
                     DefaultBlockParameter blockParameter = new DefaultBlockParameterNumber(
@@ -372,7 +372,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                     queryNewBlock.setData("Failed to connect to the blockchain node.");
                 }
             }
-        } else if (String.valueOf(chainreq.getChainIP()) == "ChainMaker") {
+        } else if (chainreq.getChainIP().equals("ChainMaker")) {
             String logs = "";
             try {
                 SSHConfig.connect();
@@ -386,7 +386,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                     .getAsJsonObject("header")
                     .get("block_height").getAsBigInteger();
             int j = 0;
-            for (BigInteger i = height; i.compareTo(height) >= 0; i = i.subtract(new BigInteger("1"))) {
+            for (BigInteger i = height; i.compareTo(BigInteger.ZERO) >= 0; i = i.subtract(new BigInteger("1"))) {
                 String blocklog = "";
                 try {
                     SSHConfig.connect();
@@ -451,7 +451,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 e.printStackTrace();
             }
             int j = 0;
-            for (BigInteger i = height; i.compareTo(height) >= 0; i = i.subtract(new BigInteger("1"))) {
+            for (BigInteger i = height; i.compareTo(BigInteger.ZERO) >= 0; i = i.subtract(new BigInteger("1"))) {
                 String targetUrl = "http://116.204.36.31:8000/api/blockChain/blockByHeight?blockHeight="
                         + i.toString() + "&includeTransactions=true";
                 String logs = "";
@@ -476,7 +476,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 JsonObject headerJsonObj = JsonParser.parseString(logs).getAsJsonObject().getAsJsonObject("Header");
                 BigInteger blockHeight = headerJsonObj.get("Height").getAsBigInteger();
                 String blockHash = JsonParser.parseString(logs).getAsJsonObject().get("BlockHash").getAsString();
-                BigInteger timeStamp = headerJsonObj.get("Time").getAsBigInteger();
+                String timeStamp = headerJsonObj.get("Time").getAsString();
                 BigInteger blockSize = JsonParser.parseString(logs).getAsJsonObject().get("BlockSize")
                         .getAsBigInteger();
                 BigInteger transactionCount = JsonParser.parseString(logs).getAsJsonObject().getAsJsonObject("Body")
@@ -502,7 +502,6 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
 
                 j++;
                 blocks.add(blockInfo);
-
                 if (j == 10)
                     break;
             }
@@ -518,7 +517,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
     public CommonResp checkTxInfo(TxhashReq txhashreq) { ///////////////
         CommonResp queryTxInfoResp = new CommonResp();
 
-        if (txhashreq.getChainIP() == "ETH") {
+        if (txhashreq.getChainIP().equals("ETH")) {
             Web3j web3j = Web3j.build(new HttpService(txhashreq.getChainIP()));
             try {
 
@@ -552,7 +551,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             } catch (InterruptedException | ExecutionException e) {
                 queryTxInfoResp.setData("Failed to connect to the blockchain node.");
             }
-        } else if (txhashreq.getChainIP() == "ChainMaker") {
+        } else if (txhashreq.getChainIP().equals("ChainMaker")) {
             String logs = "";
             try {
                 SSHConfig.connect();
