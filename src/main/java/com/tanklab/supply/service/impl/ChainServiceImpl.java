@@ -670,7 +670,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             JsonObject jsonObj = JsonParser.parseString(logs).getAsJsonObject();
             JsonObject txObj = jsonObj.getAsJsonObject("Transaction");
 
-            BigInteger transactionId = jsonObj.get("TransactionId").getAsBigInteger();
+            // BigInteger transactionId = jsonObj.get("TransactionId").getAsBigInteger();
             String status = jsonObj.get("Status").getAsString();
             BigInteger blockNumber = jsonObj.get("BlockNumber").getAsBigInteger();
             // String blockHash = jsonObj.get("BlockHash").getAsString();
