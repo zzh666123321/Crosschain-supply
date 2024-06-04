@@ -21,4 +21,6 @@ public interface CrosschainService extends IService<Crosschain> {
     CommonResp queryCrossTx();
 
     CommonResp queryTxInfo(String txHash, Integer txId);
+
+    CommonResp addCrossTx(CrossReq crossReq);
 }

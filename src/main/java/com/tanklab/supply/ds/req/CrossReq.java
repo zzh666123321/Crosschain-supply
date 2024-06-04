@@ -11,14 +11,14 @@ import lombok.Data;
     @ApiModel(value="跨链请求格式")
     public class CrossReq {
 
-        @ApiModelProperty(value = "交易参数")
-        private int param;
-        @ApiModelProperty(value = "交易起始链")
-        private int crossFrom;
-        @ApiModelProperty(value = "交易目的链")
-        private int crossTo;
-        @ApiModelProperty(value = "跨链类型")
-        private int crossType;
+        @ApiModelProperty(value = "原链IP")
+        private String srcIp;
+        @ApiModelProperty(value = "目的链IP")
+        private String dstIp;
+        @ApiModelProperty(value = "源链类型")
+        private String srcChain;
+        @ApiModelProperty(value = "目的链类型")
+        private String dstChain;
 
 
 

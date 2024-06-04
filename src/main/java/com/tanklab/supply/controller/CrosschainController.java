@@ -42,6 +42,12 @@ public class CrosschainController {
             return crosschainService.queryTxInfo(txHash, txId);
         }
 
+        @ApiOperation(value="插入跨链请求内容")
+        @PostMapping("/addCrossTx")
+        public CommonResp addCrossTx (@RequestBody CrossReq addbeefreq) {
+                return crosschainService.addCrossTx(addbeefreq);
+        }
+
 }
 
 
