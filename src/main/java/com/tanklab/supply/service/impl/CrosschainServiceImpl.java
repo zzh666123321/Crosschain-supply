@@ -139,7 +139,8 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
 
     @Override
     public CommonResp addCrossTx(CrossReq crossReq) {
-        String targetUrl = "http://<server_ip>:8090/cross_chain";
+        CommonResp responseForF = new CommonResp();
+        String targetUrl = "http://127.0.0.1:8080/cross_chain?src-chain=chainmaker&dst-chain=h2chain&src-ip=192.168.0.2&dst-ip=192.168.0.193";
         String logs = "";
         try {
                 URL url = new URL(targetUrl);
@@ -154,10 +155,24 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 }
                 in.close();
                 logs = response.toString();
+            System.out.println(logs);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        return null;
+            JSONObject resultObj = new JSONObject();
+//            resultObj.put("txId", crosschain.getTxId());           //源链信息+目的链信息+调用合约+哈希结果
+//            resultObj.put("username", crosschain.getUsername());
+//            resultObj.put("status", crosschain.getStatus());
+//            resultObj.put("contract", crosschain.getContract());
+//            resultObj.put("crossFrom", crosschain.getCrossFrom());
+//            resultObj.put("crossTo", crosschain.getCrossTo());
+//            resultObj.put("crossType", crosschain.getCrossType());
+//            resultObj.put("txHash", crosschain.getTxHash());
+
+            // 设置响应数据
+            responseForF.setRet(ResultCode.SUCCESS);
+            responseForF.setData(resultObj);
+        return responseForF;
         }
 
 
