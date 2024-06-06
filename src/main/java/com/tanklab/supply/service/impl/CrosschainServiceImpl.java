@@ -61,13 +61,12 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
             for (Crosschain crosschain : crosschainList) {
                 JSONObject resultObj = new JSONObject();
                 resultObj.put("txId", crosschain.getTxId());
-                resultObj.put("username", crosschain.getUsername());
-                resultObj.put("status", crosschain.getStatus());
-                resultObj.put("contract", crosschain.getContract());
-                resultObj.put("crossFrom", crosschain.getCrossFrom());
-                resultObj.put("crossTo", crosschain.getCrossTo());
-                resultObj.put("crossType", crosschain.getCrossType());
-                resultObj.put("txHash", crosschain.getTxHash());
+                resultObj.put("srcIp", crosschain.getSrcIp());
+                resultObj.put("srcPort", crosschain.getSrcPort());
+                resultObj.put("dstIp", crosschain.getDstIp());
+                resultObj.put("dstPort", crosschain.getDstPort());
+                resultObj.put("srcHash", crosschain.getSrcHash());
+                resultObj.put("dstHash", crosschain.getDstHash());
                 resultArray.add(resultObj);
             }
 
@@ -116,13 +115,12 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                     // 构建响应数据
                     JSONObject resultObj = new JSONObject();
                     resultObj.put("txId", crosschain.getTxId());
-                    resultObj.put("username", crosschain.getUsername());
-                    resultObj.put("status", crosschain.getStatus());
-                    resultObj.put("contract", crosschain.getContract());
-                    resultObj.put("crossFrom", crosschain.getCrossFrom());
-                    resultObj.put("crossTo", crosschain.getCrossTo());
-                    resultObj.put("crossType", crosschain.getCrossType());
-                    resultObj.put("txHash", crosschain.getTxHash());
+                    resultObj.put("srcIp", crosschain.getSrcIp());
+                    resultObj.put("srcPort", crosschain.getSrcPort());
+                    resultObj.put("dstIp", crosschain.getDstIp());
+                    resultObj.put("dstPort", crosschain.getDstPort());
+                    resultObj.put("srcHash", crosschain.getSrcHash());
+                    resultObj.put("dstHash", crosschain.getDstHash());
 
                     // 设置响应数据
                     response.setRet(ResultCode.SUCCESS);
@@ -140,6 +138,7 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
     @Override
     public CommonResp addCrossTx(CrossReq crossReq) {
         CommonResp responseForF = new CommonResp();
+        Crosschain crosschain = new Crosschain().setSrcIp(crossReq.getSrcIp()).setSrcPort(crossReq.getSrcPort()).setDstIp(crossReq.getDstIp()).setDstPort(crossReq.getDstPort());
         String targetUrl = "http://127.0.0.1:8080/cross_chain?src-chain=chainmaker&dst-chain=h2chain&src-ip=192.168.0.2&dst-ip=192.168.0.193";
         String logs = "";
         try {
@@ -172,6 +171,8 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
             // 设置响应数据
             responseForF.setRet(ResultCode.SUCCESS);
             responseForF.setData(resultObj);
+
+            int insert = this.crosschainMapper.insert(crosschain);
         return responseForF;
         }
 

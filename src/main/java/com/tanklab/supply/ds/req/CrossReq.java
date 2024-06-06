@@ -13,8 +13,12 @@ import lombok.Data;
 
         @ApiModelProperty(value = "原链IP")
         private String srcIp;
+        @ApiModelProperty(value = "原链端口")
+        private int srcPort;
         @ApiModelProperty(value = "目的链IP")
         private String dstIp;
+        @ApiModelProperty(value = "目的链端口")
+        private int dstPort;
         @ApiModelProperty(value = "源链类型")
         private String srcChain;
         @ApiModelProperty(value = "目的链类型")

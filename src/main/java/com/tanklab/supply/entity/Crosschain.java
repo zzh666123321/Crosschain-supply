@@ -31,19 +31,14 @@ public class Crosschain implements Serializable {
 
       @TableId(value = "tx_id", type = IdType.AUTO)
     private int txId;
-    private String username;
-    private String status;
-    private String contract;
-    private String crossFrom;
-    private String crossTo;
+    private String srcIp;
+    private int srcPort;
+    private String dstIp;
+    private int dstPort;
+    private String srcHash;
     //@ApiModelProperty(value = "跨链类型")
-    private String crossType;
-    private String txHash;
-//    //@ApiModelProperty(value = "交易结果")
-//    private Boolean crossResult;
+    private String dstHash;
 
-//    //@ApiModelProperty(value = "交易时间")
-//    private Date crossTime;
 
 
 
