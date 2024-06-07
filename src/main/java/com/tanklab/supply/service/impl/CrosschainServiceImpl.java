@@ -154,7 +154,6 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 }
                 in.close();
                 logs = response.toString();
-            System.out.println(logs);
             } catch (IOException e) {
                 e.printStackTrace();
             }
