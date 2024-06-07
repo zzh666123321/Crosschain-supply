@@ -26,6 +26,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -65,6 +67,8 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 resultObj.put("srcPort", crosschain.getSrcPort());
                 resultObj.put("dstIp", crosschain.getDstIp());
                 resultObj.put("dstPort", crosschain.getDstPort());
+                resultObj.put("srcChainType",crosschain.getSrcChainType());
+                resultObj.put("dstChainType",crosschain.getDstChainType());
                 resultObj.put("srcHash", crosschain.getSrcHash());
                 resultObj.put("dstHash", crosschain.getDstHash());
                 resultArray.add(resultObj);
@@ -137,9 +141,12 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
 
     @Override
     public CommonResp addCrossTx(CrossReq crossReq) {
+        String ethTxHash = new String();
+        String chainmakerTxHash = new String();
+        String h2chainTxHash = new String();
         CommonResp responseForF = new CommonResp();
-        Crosschain crosschain = new Crosschain().setSrcIp(crossReq.getSrcIp()).setSrcPort(crossReq.getSrcPort()).setDstIp(crossReq.getDstIp()).setDstPort(crossReq.getDstPort());
-        String targetUrl = "http://127.0.0.1:8080/cross_chain?src-chain=chainmaker&dst-chain=h2chain&src-ip=192.168.0.2&dst-ip=192.168.0.193";
+        Crosschain crosschain = new Crosschain().setSrcIp(crossReq.getSrcIp()).setSrcPort(crossReq.getSrcPort()).setDstIp(crossReq.getDstIp()).setDstPort(crossReq.getDstPort()).setSrcChainType(crossReq.getSrcChainType()).setDstChainType(crossReq.getDstChainType());
+        String targetUrl = "http://127.0.0.1:8080/cross_chain?src-chain="+crosschain.getSrcChainType()+"&dst-chain="+crosschain.getDstChainType()+"&src-ip=192.168.0.2&dst-ip=192.168.0.193";
         String logs = "";
         try {
                 URL url = new URL(targetUrl);
@@ -154,23 +161,59 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 }
                 in.close();
                 logs = response.toString();
+
+                // 创建正则表达式模式
+                Pattern pattern = Pattern.compile("\\[调用长安链成功, 交易哈希: ([a-zA-z0-9]+)");
+                Pattern pattern1 = Pattern.compile("\\[交易哈希： ([a-zA-z0-9]+)");
+
+                Matcher matcher = pattern.matcher(logs);
+                Matcher matcher1 = pattern1.matcher(logs);
+                // 查找匹配的子字符串
+                if (matcher.find()) {
+                    // 提取哈希内容
+                    chainmakerTxHash = matcher.group(1);
+                    chainmakerTxHash = chainmakerTxHash.substring(0, chainmakerTxHash.length() - 1);
+                    // 打印哈希内容
+                    System.out.println("长安链哈希内容：" + chainmakerTxHash);
+                } else {
+                    // 如果未找到匹配的子字符串，则打印提示
+                    System.out.println("未找到长安链匹配的哈希内容。");
+                }
+                if (matcher1.find()) {
+                    // 提取哈希内容
+                    ethTxHash = matcher1.group(1);
+                    ethTxHash = ethTxHash.substring(0, ethTxHash.length() - 1);
+                    // 打印哈希内容
+                    System.out.println("以太坊哈希内容：" + ethTxHash);
+                } else {
+                    // 如果未找到匹配的子字符串，则打印提示
+                    System.out.println("未找到以太坊匹配的哈希内容。");
+                }
+                System.out.println(logs);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            JSONObject resultObj = new JSONObject();
-//            resultObj.put("txId", crosschain.getTxId());           //源链信息+目的链信息+调用合约+哈希结果
-//            resultObj.put("username", crosschain.getUsername());
-//            resultObj.put("status", crosschain.getStatus());
-//            resultObj.put("contract", crosschain.getContract());
-//            resultObj.put("crossFrom", crosschain.getCrossFrom());
-//            resultObj.put("crossTo", crosschain.getCrossTo());
-//            resultObj.put("crossType", crosschain.getCrossType());
-//            resultObj.put("txHash", crosschain.getTxHash());
 
+            JSONObject resultObj = new JSONObject();
+            resultObj.put("txId", crosschain.getTxId());
+            resultObj.put("srcIp", crosschain.getSrcIp());
+            resultObj.put("srcPort", crosschain.getSrcPort());
+            resultObj.put("dstIp", crosschain.getDstIp());
+            resultObj.put("dstPort", crosschain.getDstPort());
+            if(crosschain.getSrcChainType().equals("eth")){
+                resultObj.put("srcHash", ethTxHash);
+                resultObj.put("dstHash", chainmakerTxHash);
+                crosschain.setSrcHash(ethTxHash);
+                crosschain.setDstHash(chainmakerTxHash);
+            }else{
+                resultObj.put("srcHash", chainmakerTxHash);
+                resultObj.put("dstHash", ethTxHash);
+                crosschain.setSrcHash(chainmakerTxHash);
+                crosschain.setDstHash(ethTxHash);
+            }
             // 设置响应数据
             responseForF.setRet(ResultCode.SUCCESS);
             responseForF.setData(resultObj);
-
             int insert = this.crosschainMapper.insert(crosschain);
         return responseForF;
         }

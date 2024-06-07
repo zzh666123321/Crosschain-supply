@@ -35,6 +35,8 @@ public class Crosschain implements Serializable {
     private int srcPort;
     private String dstIp;
     private int dstPort;
+    private String srcChainType;
+    private String dstChainType;
     private String srcHash;
     //@ApiModelProperty(value = "跨链类型")
     private String dstHash;

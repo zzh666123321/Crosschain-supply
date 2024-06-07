@@ -20,9 +20,9 @@ import lombok.Data;
         @ApiModelProperty(value = "目的链端口")
         private int dstPort;
         @ApiModelProperty(value = "源链类型")
-        private String srcChain;
+        private String srcChainType;
         @ApiModelProperty(value = "目的链类型")
-        private String dstChain;
+        private String dstChainType;
 
 
 
