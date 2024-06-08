@@ -69,10 +69,11 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
     @Autowired
     public ChainServiceImpl ChainService;
 
-    private static String cmcpath = "~/ChainMaker/chainmaker-go/tools/cmc";
+    private static String cmcpath = "~/CIPS-H2Chain/chainmaker-go/tools/cmc"; // ChainMaker/chainmaker-go/tools/cmc
     private static String ethname = "ETH";
     private static String chainmakername = "ChainMaker";
     private static String h2Chainname = "H2Chain";
+    private static String sdktype = "sdk_config_pk.yml"; // sdk_config.yml
 
     @Override
     public CommonResp querychainInfo() {
@@ -142,7 +143,8 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 SSHConfig.connect(ipAddress);
                 logs = SSHConfig.executeCMD(
                         "cd " + cmcpath
-                                + " && ./cmc query block-by-height --chain-id=chain1 --sdk-conf-path=./testdata/sdk_config.yml",
+                                + " && ./cmc query block-by-height --chain-id=chain1 --sdk-conf-path=./testdata/"
+                                + sdktype,
                         "UTF-8");
             } catch (Exception e) {
                 System.out.println("SSH ERROR");
@@ -240,7 +242,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 String cmd = "cd " + cmcpath
                         + " && ./cmc query block-by-height "
                         + blockheightReq.getBlockHEIGHT()
-                        + " --chain-id=chain1 --sdk-conf-path=./testdata/sdk_config.yml";
+                        + " --chain-id=chain1 --sdk-conf-path=./testdata/" + sdktype;
                 logs = SSHConfig.executeCMD(cmd, "UTF-8");
             } catch (Exception e) {
                 // System.out.println("SSH ERROR");
@@ -417,7 +419,8 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 SSHConfig.connect(ipAddress);
                 logs = SSHConfig.executeCMD(
                         "cd " + cmcpath
-                                + " && ./cmc query block-by-height --chain-id=chain1 --sdk-conf-path=./testdata/sdk_config.yml",
+                                + " && ./cmc query block-by-height --chain-id=chain1 --sdk-conf-path=./testdata/"
+                                + sdktype,
                         "UTF-8");
             } catch (Exception e) {
                 System.out.println("SSH ERROR");
@@ -433,7 +436,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                     String cmd = "cd " + cmcpath
                             + " && ./cmc query block-by-height "
                             + i.toString()
-                            + " --chain-id=chain1 --sdk-conf-path=./testdata/sdk_config.yml";
+                            + " --chain-id=chain1 --sdk-conf-path=./testdata/" + sdktype;
                     blocklog = SSHConfig.executeCMD(cmd, "UTF-8");
                 } catch (Exception e) {
                     // System.out.println("SSH ERROR");
@@ -608,7 +611,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 SSHConfig.connect(ipAddress);
                 String cmd = "cd " + cmcpath
                         + " && ./cmc query tx " + txhashreq.getTxHASH()
-                        + " --chain-id=chain1 --sdk-conf-path=./testdata/sdk_config.yml";
+                        + " --chain-id=chain1 --sdk-conf-path=./testdata/" + sdktype;
                 logs = SSHConfig.executeCMD(cmd, "UTF-8");
             } catch (Exception e) {
                 System.out.println("SSH ERROR");
