@@ -69,11 +69,12 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
     @Autowired
     public ChainServiceImpl ChainService;
 
-    private static String cmcpath = "~/CIPS-H2Chain/chainmaker-go/tools/cmc"; // ChainMaker/chainmaker-go/tools/cmc
+    private static String cmcpath = "~/CIPS-H2Chain"; // ChainMaker/chainmaker-go/tools/cmc
+    private static String cmcexepath = "./chainmaker-go/tools/cmc/cmc"; // ./cmc
     private static String ethname = "ETH";
     private static String chainmakername = "ChainMaker";
     private static String h2Chainname = "H2Chain";
-    private static String sdktype = "sdk_config_pk.yml"; // sdk_config.yml
+    private static String sdktype = "/root/CIPS-H2Chain/chainmaker/config_files/sdkconfigs/chain3_sdkconfig1.yml"; // ./testdata/sdk_config.yml
 
     @Override
     public CommonResp querychainInfo() {
@@ -143,7 +144,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 SSHConfig.connect(ipAddress);
                 logs = SSHConfig.executeCMD(
                         "cd " + cmcpath
-                                + " && ./cmc query block-by-height --chain-id=chain1 --sdk-conf-path=./testdata/"
+                                + " && " + cmcexepath + " query block-by-height --chain-id=chain1 --sdk-conf-path="
                                 + sdktype,
                         "UTF-8");
             } catch (Exception e) {
@@ -240,9 +241,9 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             try {
                 SSHConfig.connect(ipAddress);
                 String cmd = "cd " + cmcpath
-                        + " && ./cmc query block-by-height "
+                        + " && " + cmcexepath + " query block-by-height "
                         + blockheightReq.getBlockHEIGHT()
-                        + " --chain-id=chain1 --sdk-conf-path=./testdata/" + sdktype;
+                        + " --chain-id=chain1 --sdk-conf-path=" + sdktype;
                 logs = SSHConfig.executeCMD(cmd, "UTF-8");
             } catch (Exception e) {
                 // System.out.println("SSH ERROR");
@@ -419,7 +420,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 SSHConfig.connect(ipAddress);
                 logs = SSHConfig.executeCMD(
                         "cd " + cmcpath
-                                + " && ./cmc query block-by-height --chain-id=chain1 --sdk-conf-path=./testdata/"
+                                + " && " + cmcexepath + " query block-by-height --chain-id=chain1 --sdk-conf-path="
                                 + sdktype,
                         "UTF-8");
             } catch (Exception e) {
@@ -434,9 +435,9 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 try {
                     SSHConfig.connect(ipAddress);
                     String cmd = "cd " + cmcpath
-                            + " && ./cmc query block-by-height "
+                            + " && " + cmcexepath + " query block-by-height "
                             + i.toString()
-                            + " --chain-id=chain1 --sdk-conf-path=./testdata/" + sdktype;
+                            + " --chain-id=chain1 --sdk-conf-path=" + sdktype;
                     blocklog = SSHConfig.executeCMD(cmd, "UTF-8");
                 } catch (Exception e) {
                     // System.out.println("SSH ERROR");
@@ -610,8 +611,8 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             try {
                 SSHConfig.connect(ipAddress);
                 String cmd = "cd " + cmcpath
-                        + " && ./cmc query tx " + txhashreq.getTxHASH()
-                        + " --chain-id=chain1 --sdk-conf-path=./testdata/" + sdktype;
+                        + " && " + cmcexepath + " query tx " + txhashreq.getTxHASH()
+                        + " --chain-id=chain1 --sdk-conf-path=" + sdktype;
                 logs = SSHConfig.executeCMD(cmd, "UTF-8");
             } catch (Exception e) {
                 System.out.println("SSH ERROR");

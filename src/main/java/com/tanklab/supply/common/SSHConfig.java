@@ -17,7 +17,7 @@ public class SSHConfig {
     public static String ssh_username = "root";
     public static String ssh_ip = "116.204.36.31";
     public static int ssh_port = 22;
-    public static String ssh_password = "ABCabc123";
+    public static String ssh_password = "1qaz@WSX";
 
     private static Session session = null;
     private static int timeout = 60000;
