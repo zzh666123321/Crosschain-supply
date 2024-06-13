@@ -146,7 +146,12 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
         String h2chainTxHash = new String();
         CommonResp responseForF = new CommonResp();
         Crosschain crosschain = new Crosschain().setSrcIp(crossReq.getSrcIp()).setSrcPort(crossReq.getSrcPort()).setDstIp(crossReq.getDstIp()).setDstPort(crossReq.getDstPort()).setSrcChainType(crossReq.getSrcChainType()).setDstChainType(crossReq.getDstChainType());
-        String targetUrl = "http://127.0.0.1:8080/cross_chain?src-chain="+crosschain.getSrcChainType()+"&dst-chain="+crosschain.getDstChainType()+"&src-ip=192.168.0.2&dst-ip=192.168.0.193";
+        String targetUrl = "http://127.0.0.1:8080/cross_chain?src-chain="+crosschain.getSrcChainType()+"&dst-chain="+crosschain.getDstChainType()+"&src-ip=192.168.0.193&dst-ip=192.168.0.193";
+        crosschain.setSrcIp("192.168.0.2");
+        crosschain.setDstIp("192.168.0.193");
+        crosschain.setSrcPort(1000);
+        crosschain.setDstPort(8000);
+        System.out.println(crosschain);
         String logs = "";
         try {
                 URL url = new URL(targetUrl);
@@ -163,16 +168,19 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 logs = response.toString();
 
                 // 创建正则表达式模式
-                Pattern pattern = Pattern.compile("\\[调用长安链成功, 交易哈希: ([a-zA-z0-9]+)");
-                Pattern pattern1 = Pattern.compile("\\[交易哈希： ([a-zA-z0-9]+)");
+                Pattern pattern = Pattern.compile("RunChainmaker2H2Chain] 调用长安链成功, 交易哈希: ([a-zA-z0-9]+)");
+                Pattern pattern1 = Pattern.compile("H2Chain发送成功,交易哈希:([a-zA-z0-9]+)");
+                Pattern pattern2 = Pattern.compile("sendToChainmaker] 调用长安链成功, 交易哈希: ([a-zA-z0-9]+)");
+
 
                 Matcher matcher = pattern.matcher(logs);
                 Matcher matcher1 = pattern1.matcher(logs);
+                Matcher matcher2 = pattern2.matcher(logs);
                 // 查找匹配的子字符串
                 if (matcher.find()) {
                     // 提取哈希内容
                     chainmakerTxHash = matcher.group(1);
-                    chainmakerTxHash = chainmakerTxHash.substring(0, chainmakerTxHash.length() - 1);
+//                    chainmakerTxHash = chainmakerTxHash.substring(0, chainmakerTxHash.length() - 1);
                     // 打印哈希内容
                     System.out.println("长安链哈希内容：" + chainmakerTxHash);
                 } else {
@@ -181,14 +189,25 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 }
                 if (matcher1.find()) {
                     // 提取哈希内容
-                    ethTxHash = matcher1.group(1);
-                    ethTxHash = ethTxHash.substring(0, ethTxHash.length() - 1);
+                    h2chainTxHash = matcher1.group(1);
+//                    h2chainTxHash = h2chainTxHash.substring(0, h2chainTxHash.length() - 1);
                     // 打印哈希内容
-                    System.out.println("以太坊哈希内容：" + ethTxHash);
+                    System.out.println("海河哈希内容：" + h2chainTxHash);
                 } else {
                     // 如果未找到匹配的子字符串，则打印提示
-                    System.out.println("未找到以太坊匹配的哈希内容。");
+                    System.out.println("未找到海河匹配的哈希内容。");
                 }
+
+            if (matcher2.find()) {
+                // 提取哈希内容
+                ethTxHash = matcher2.group(1);
+//                    h2chainTxHash = h2chainTxHash.substring(0, h2chainTxHash.length() - 1);
+                // 打印哈希内容
+                System.out.println("response哈希内容：" + ethTxHash);
+            } else {
+                // 如果未找到匹配的子字符串，则打印提示
+                System.out.println("未找到response的哈希内容。");
+            }
                 System.out.println(logs);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -196,21 +215,28 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
 
             JSONObject resultObj = new JSONObject();
             resultObj.put("txId", crosschain.getTxId());
-            resultObj.put("srcIp", crosschain.getSrcIp());
-            resultObj.put("srcPort", crosschain.getSrcPort());
-            resultObj.put("dstIp", crosschain.getDstIp());
-            resultObj.put("dstPort", crosschain.getDstPort());
-            if(crosschain.getSrcChainType().equals("eth")){
-                resultObj.put("srcHash", ethTxHash);
-                resultObj.put("dstHash", chainmakerTxHash);
-                crosschain.setSrcHash(ethTxHash);
-                crosschain.setDstHash(chainmakerTxHash);
-            }else{
-                resultObj.put("srcHash", chainmakerTxHash);
-                resultObj.put("dstHash", ethTxHash);
-                crosschain.setSrcHash(chainmakerTxHash);
-                crosschain.setDstHash(ethTxHash);
-            }
+            resultObj.put("srcIp", "192.168.0.2");
+            resultObj.put("srcPort", "1000");
+            resultObj.put("dstIp", "192.168.0.193");
+            resultObj.put("dstPort", "8000");
+            resultObj.put("srcHash",chainmakerTxHash);
+            resultObj.put("dstHash",h2chainTxHash);
+            resultObj.put("responseHash",ethTxHash);
+            crosschain.setSrcHash(chainmakerTxHash);
+            crosschain.setDstHash(h2chainTxHash);
+            crosschain.setResponseHash(ethTxHash);
+
+//            if(crosschain.getSrcChainType().equals("eth")){
+//                resultObj.put("srcHash", ethTxHash);
+//                resultObj.put("dstHash", chainmakerTxHash);
+//                crosschain.setSrcHash(ethTxHash);
+//                crosschain.setDstHash(chainmakerTxHash);
+//            }else{
+//                resultObj.put("srcHash", chainmakerTxHash);
+//                resultObj.put("dstHash", ethTxHash);
+//                crosschain.setSrcHash(chainmakerTxHash);
+//                crosschain.setDstHash(ethTxHash);
+//            }
             // 设置响应数据
             responseForF.setRet(ResultCode.SUCCESS);
             responseForF.setData(resultObj);

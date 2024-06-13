@@ -40,7 +40,7 @@ public class Crosschain implements Serializable {
     private String srcHash;
     //@ApiModelProperty(value = "跨链类型")
     private String dstHash;
-
+    private String responseHash;
 
 
 
