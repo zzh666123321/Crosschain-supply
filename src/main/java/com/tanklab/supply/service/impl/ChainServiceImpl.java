@@ -245,6 +245,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             } catch (IOException e) {
                 queryBlockInfoResp.setData("Failed to connect to the blockchain node.");
             }
+            System.out.println("-------ETH区块信息查询完毕-------");
         } else if (chainType.equals(chainmakername)) {
             String logs = "";
             try {
@@ -288,6 +289,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             queryBlockInfoResp.setRet(ResultCode.SUCCESS);
             queryBlockInfoResp.setData(blockInfo);
 
+            System.out.println("-------ChainMaker区块信息查询完毕-------");
         } else {
             String targetUrl = "http://" + ipAddress + ":8000/api/blockChain/blockByHeight?blockHeight="
                     + blockheightReq.getBlockHEIGHT() + "&includeTransactions=true";
@@ -338,6 +340,8 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
 
             queryBlockInfoResp.setRet(ResultCode.SUCCESS);
             queryBlockInfoResp.setData(blockInfo);
+
+            System.out.println("-------H2CHain区块信息查询完毕-------");
         }
 
         return queryBlockInfoResp;
@@ -423,6 +427,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                     queryNewBlock.setData("Failed to connect to the blockchain node.");
                 }
             }
+            System.out.println("-------ETH最新十个区块信息查询完毕-------");
         } else if (chainType.equals(chainmakername)) {
             String logs = "";
             try {
@@ -485,6 +490,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 if (j == 10)
                     break;
             }
+            System.out.println("-------ChainMaker最新十个区块信息查询完毕-------");
         } else {
             // String targetUrl = "http://116.204.36.31:8000/api/blockChain/blockHeight";
             BigInteger height = new BigInteger("0");
@@ -559,6 +565,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 if (j == 10)
                     break;
             }
+            System.out.println("-------H2Chain最新十个区块信息查询完毕-------");
         }
         JSONObject tenblocks = new JSONObject();
         tenblocks.put("tenBlocksInfo", blocks);
@@ -615,6 +622,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             } catch (InterruptedException | ExecutionException e) {
                 queryTxInfoResp.setData("Failed to connect to the blockchain node.");
             }
+            System.out.println("-------ETH交易信息查询完毕-------");
         } else if (chainType.equals(chainmakername)) {
             String logs = "";
             try {
@@ -657,6 +665,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             queryTxInfoResp.setRet(ResultCode.SUCCESS);
             queryTxInfoResp.setData(txInfo);
 
+            System.out.println("-------ChainMaker交易信息查询完毕-------");
         } else {
             String targetUrl = "http://" + ipAddress + ":8000/api/blockChain/transactionResult?transactionId="
                     + txhashreq.getTxHASH();
@@ -714,6 +723,8 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
 
             queryTxInfoResp.setRet(ResultCode.SUCCESS);
             queryTxInfoResp.setData(txInfo);
+
+            System.out.println("-------H2Chain交易信息查询完毕-------");
         }
 
         return queryTxInfoResp;
