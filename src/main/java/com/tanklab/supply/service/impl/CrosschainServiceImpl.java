@@ -209,6 +209,10 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                         } else {
                             System.out.println("未找到匹配的哈希值");
                         }
+                        crosschain.setSrcIp("192.168.0.2");
+                        crosschain.setDstIp("192.168.0.2");
+                        crosschain.setSrcPort(10012);
+                        crosschain.setDstPort(1000);
                 }else if(crosschain.getSrcChainType().equals("chainmaker") && crosschain.getDstChainType().equals("h2chain")){
                     // 正则表达式模式
                     String regex_h2c = "sendToH2Chain.*?(?:交易哈希|txHash):\\s?([a-fA-F0-9]{64})";
@@ -241,6 +245,10 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                     } else {
                         System.out.println("未找到匹配的哈希值");
                     }
+                    crosschain.setSrcIp("192.168.0.2");
+                    crosschain.setDstIp("192.168.0.193");
+                    crosschain.setSrcPort(1000);
+                    crosschain.setDstPort(8000);
                 }else if(crosschain.getSrcChainType().equals("h2chain") && crosschain.getDstChainType().equals("eth")){
                         // 正则表达式模式
                         String regex_h2c = "sendToH2Chain.*?(?:交易哈希|txHash):\\s?([a-fA-F0-9]{64})";
@@ -272,6 +280,10 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                         } else {
                             System.out.println("未找到匹配的哈希值");
                         }
+                    crosschain.setSrcIp("192.168.0.193");
+                    crosschain.setDstIp("192.168.0.2");
+                    crosschain.setSrcPort(8000);
+                    crosschain.setDstPort(10012);
                 }
 //                // 创建正则表达式模式
 //                Pattern pattern = Pattern.compile("RunChainmaker2H2Chain] 调用长安链成功, 交易哈希: ([a-zA-z0-9]+)");
@@ -321,10 +333,10 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
 
             JSONObject resultObj = new JSONObject();
             resultObj.put("txId", crosschain.getTxId());
-            resultObj.put("srcIp", "192.168.0.2");
-            resultObj.put("srcPort", "1000");
-            resultObj.put("dstIp", "192.168.0.193");
-            resultObj.put("dstPort", "8000");
+            resultObj.put("srcIp", crosschain.getSrcIp());
+            resultObj.put("srcPort", crosschain.getSrcPort());
+            resultObj.put("dstIp", crosschain.getDstIp());
+            resultObj.put("dstPort", crosschain.getDstPort());
             resultObj.put("srcHash",crosschain.getSrcHash());
             resultObj.put("dstHash",crosschain.getDstHash());
             resultObj.put("responseHash",crosschain.getResponseHash());
