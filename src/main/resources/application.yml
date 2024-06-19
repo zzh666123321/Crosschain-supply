@@ -8,9 +8,12 @@ server:
 spring:
   datasource:
     username: root # 数据库账号
-    password: 'Tank123123' # 数据库密码
-    url: jdbc:mysql://116.204.36.31:3306/crosschain_database?serverTimezone=GMT%2B8&amp&characterEncoding=utf-8 # 数据库IP和端口
+    password: '123456' # 数据库密码
+    url: jdbc:mysql://localhost:3306/crosschain_database?serverTimezone=GMT%2B8&amp&characterEncoding=utf-8 # 数据库IP和端口
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+#学弟服务器 116.204.36.31  Tank123123
+#server21  localhost      123456
 
 # mybatis-plus??
 mybatis-plus:

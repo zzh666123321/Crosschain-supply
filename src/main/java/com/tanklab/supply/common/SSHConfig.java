@@ -17,7 +17,7 @@ public class SSHConfig {
     public static String ssh_username = "root";
     public static String ssh_ip = "116.204.36.31";
     public static int ssh_port = 22;
-    public static String ssh_password = "ABCabc123";  
+    public static String ssh_password = "1qaz@WSX";  
     //server服务器密码  1qaz@WSX  
     //学弟服务器密码  ABCabc123
 

@@ -69,11 +69,11 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
     @Autowired
     public ChainServiceImpl ChainService;
 
-    private static String cmcpath = "~/ChainMaker/chainmaker-go/tools/cmc";
+    private static String cmcpath = "~/CIPS-H2Chain";
     //server服务器  ~/CIPS-H2Chain
     //学弟服务器     ~/ChainMaker/chainmaker-go/tools/cmc
 
-    private static String cmcexepath = "./cmc";
+    private static String cmcexepath = "./chainmaker-go/tools/cmc/cmc";
     //server服务器  ./chainmaker-go/tools/cmc/cmc
     //学弟服务器   ./cmc
 
@@ -81,7 +81,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
     private static String chainmakername = "ChainMaker";
     private static String h2Chainname = "H2Chain";
     
-    private static String sdktype = "./testdata/sdk_config.yml";
+    private static String sdktype = "/root/CIPS-H2Chain/chainmaker/config_files/sdkconfigs/chain3_sdkconfig1.yml";
     //server服务器   /root/CIPS-H2Chain/chainmaker/config_files/sdkconfigs/chain3_sdkconfig1.yml
     //学弟服务器    ./testdata/sdk_config.yml
 
