@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -147,10 +148,14 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
         CommonResp responseForF = new CommonResp();
         Crosschain crosschain = new Crosschain().setSrcIp(crossReq.getSrcIp()).setSrcPort(crossReq.getSrcPort()).setDstIp(crossReq.getDstIp()).setDstPort(crossReq.getDstPort()).setSrcChainType(crossReq.getSrcChainType()).setDstChainType(crossReq.getDstChainType());
         String targetUrl = "http://127.0.0.1:8080/cross_chain?src-chain="+crosschain.getSrcChainType()+"&dst-chain="+crosschain.getDstChainType()+"&src-ip=192.168.0.193&dst-ip=192.168.0.193";
-        crosschain.setSrcIp("192.168.0.2");
-        crosschain.setDstIp("192.168.0.193");
-        crosschain.setSrcPort(1000);
-        crosschain.setDstPort(8000);
+//        crosschain.setSrcIp("192.168.0.2");
+//        crosschain.setDstIp("192.168.0.193");
+//        crosschain.setSrcPort(1000);
+//        crosschain.setDstPort(8000);
+        crosschain.setSrcPort(crossReq.getSrcPort());
+        crosschain.setDstPort(crossReq.getDstPort());
+        crosschain.setSrcIp(crossReq.getSrcIp());
+        crosschain.setDstIp(crossReq.getDstIp());
         System.out.println(crosschain);
         String logs = "";
         try {
@@ -184,107 +189,179 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 } else {
                     System.out.println("未找到匹配的哈希值");
                 }
-                if(crosschain.getSrcChainType().equals("eth") && crosschain.getDstChainType().equals("chainmaker")){
-                        String regex_eth = "sendToEth.*?(?:交易哈希|txHash)：?\\s?(0x[a-fA-F0-9]{64}|[a-fA-F0-9]{64})";
-                        Pattern pattern_eth = Pattern.compile(regex_eth);
-                        Matcher matcher_eth = pattern_eth.matcher(logs);
-                        // 检查是否找到匹配
-                        if (matcher_eth.find()) {
-                            // 提取哈希值
-                            String hash_eth = matcher_eth.group(1);
-                            System.out.println("eth链提取的哈希值: " + hash_eth);
-                            crosschain.setResponseHash(hash_eth);
-                        } else {
-                            System.out.println("未找到匹配的哈希值");
-                        }
-                        String regex_cmk = "sendToChainmaker.*?(?:交易哈希|txHash):?\\s?([a-fA-F0-9]{64})";
-                        Pattern pattern_cmk = Pattern.compile(regex_cmk);
-                        Matcher matcher_cmk= pattern_cmk.matcher(logs);
-                        // 检查是否找到匹配
-                        if (matcher_cmk.find()) {
-                            // 提取哈希值
-                            String hash_cmk = matcher_cmk.group(1);
-                            System.out.println("cmk链提取的哈希值: " + hash_cmk);
-                            crosschain.setDstHash(hash_cmk);
-                        } else {
-                            System.out.println("未找到匹配的哈希值");
-                        }
-                        crosschain.setSrcIp("192.168.0.2");
-                        crosschain.setDstIp("192.168.0.2");
-                        crosschain.setSrcPort(10012);
-                        crosschain.setDstPort(1000);
-                }else if(crosschain.getSrcChainType().equals("chainmaker") && crosschain.getDstChainType().equals("h2chain")){
-                    // 正则表达式模式
-                    String regex_h2c = "sendToH2Chain.*?(?:交易哈希|txHash):\\s?([a-fA-F0-9]{64})";
+                ///提取sendToEth的所有字符串
+                String regex_eth = "sendToEth.*?(?:交易哈希|txHash)：?\\s?(0x[a-fA-F0-9]{64}|[a-fA-F0-9]{64})";
+                Pattern pattern_eth = Pattern.compile(regex_eth);
+                Matcher matcher_eth = pattern_eth.matcher(logs);
+                ArrayList<String> hashValues_eth = new ArrayList<>();
 
-                    // 编译正则表达式
-                    Pattern pattern_h2c = Pattern.compile(regex_h2c);
-
-                    // 创建匹配器对象
-                    Matcher matcher_h2c = pattern_h2c.matcher(logs);
-
-                    // 检查是否找到匹配
-                    if (matcher_h2c.find()) {
-                        // 提取哈希值
-                        String hash_h2c = matcher_h2c.group(1);
-                        System.out.println("h2chain提取的哈希值: " + hash_h2c);
-                        crosschain.setDstHash(hash_h2c);
-                    } else {
-                        System.out.println("未找到匹配的哈希值");
-                    }
-
-                    String regex_cmk = "sendToChainmaker.*?(?:交易哈希|txHash):?\\s?([a-fA-F0-9]{64})";
-                    Pattern pattern_cmk = Pattern.compile(regex_cmk);
-                    Matcher matcher_cmk= pattern_cmk.matcher(logs);
-                    // 检查是否找到匹配
-                    if (matcher_cmk.find()) {
-                        // 提取哈希值
-                        String hash_cmk = matcher_cmk.group(1);
-                        System.out.println("cmk链提取的哈希值: " + hash_cmk);
-                        crosschain.setResponseHash(hash_cmk);
-                    } else {
-                        System.out.println("未找到匹配的哈希值");
-                    }
-                    crosschain.setSrcIp("192.168.0.2");
-                    crosschain.setDstIp("192.168.0.193");
-                    crosschain.setSrcPort(1000);
-                    crosschain.setDstPort(8000);
-                }else if(crosschain.getSrcChainType().equals("h2chain") && crosschain.getDstChainType().equals("eth")){
-                        // 正则表达式模式
-                        String regex_h2c = "sendToH2Chain.*?(?:交易哈希|txHash):\\s?([a-fA-F0-9]{64})";
-
-                        // 编译正则表达式
-                        Pattern pattern_h2c = Pattern.compile(regex_h2c);
-
-                        // 创建匹配器对象
-                        Matcher matcher_h2c = pattern_h2c.matcher(logs);
-
-                        // 检查是否找到匹配
-                        if (matcher_h2c.find()) {
-                            // 提取哈希值
-                            String hash_h2c = matcher_h2c.group(1);
-                            System.out.println("h2chain提取的哈希值: " + hash_h2c);
-                            crosschain.setResponseHash(hash_h2c);
-                        } else {
-                            System.out.println("未找到匹配的哈希值");
-                        }
-                        String regex_eth = "sendToEth.*?(?:交易哈希|txHash)：?\\s?(0x[a-fA-F0-9]{64}|[a-fA-F0-9]{64})";
-                        Pattern pattern_eth = Pattern.compile(regex_eth);
-                        Matcher matcher_eth = pattern_eth.matcher(logs);
-                        // 检查是否找到匹配
-                        if (matcher_eth.find()) {
-                            // 提取哈希值
-                            String hash_eth = matcher_eth.group(1);
-                            System.out.println("eth链提取的哈希值: " + hash_eth);
-                            crosschain.setDstHash(hash_eth);
-                        } else {
-                            System.out.println("未找到匹配的哈希值");
-                        }
-                    crosschain.setSrcIp("192.168.0.193");
-                    crosschain.setDstIp("192.168.0.2");
-                    crosschain.setSrcPort(8000);
-                    crosschain.setDstPort(10012);
+                // Iterate over all matches and add them to the list
+                while (matcher_eth.find()) {
+                    hashValues_eth.add(matcher_eth.group(1));
                 }
+                System.out.println(hashValues_eth);
+
+                String regex_cmk = "sendToChainmaker.*?(?:交易哈希|txHash):?\\s?([a-fA-F0-9]{64})";
+                Pattern pattern_cmk = Pattern.compile(regex_cmk);
+                Matcher matcher_cmk= pattern_cmk.matcher(logs);
+                ArrayList<String> hashValues_cmk = new ArrayList<>();
+
+                // Iterate over all matches and add them to the list
+                while (matcher_cmk.find()) {
+                    hashValues_cmk.add(matcher_cmk.group(1));
+                }
+                System.out.println(hashValues_cmk);
+
+                String regex_h2c = "sendToH2Chain.*?(?:交易哈希|txHash):\\s?([a-fA-F0-9]{64})";
+                Pattern pattern_h2c = Pattern.compile(regex_h2c);
+                Matcher matcher_h2c = pattern_h2c.matcher(logs);
+                ArrayList<String> hashValues_h2c = new ArrayList<>();
+
+                // Iterate over all matches and add them to the list
+                while (matcher_h2c.find()) {
+                    hashValues_h2c.add(matcher_h2c.group(1));
+                }
+                System.out.println(hashValues_h2c);
+                if(crosschain.getSrcChainType().equals("eth") && crosschain.getDstChainType().equals("chainmaker")){
+                        crosschain.setResponseHash(hashValues_eth.get(0));
+                        crosschain.setDstHash(hashValues_cmk.get(0));
+                } else if (crosschain.getSrcChainType().equals("eth") && crosschain.getDstChainType().equals("h2chain")) {
+                        crosschain.setResponseHash(hashValues_eth.get(0));
+                        crosschain.setDstHash(hashValues_h2c.get(0));
+                } else if ((crosschain.getSrcChainType().equals("eth") && crosschain.getDstChainType().equals("eth"))) {
+                        crosschain.setResponseHash(hashValues_eth.get(0));
+                        crosschain.setDstHash(hashValues_eth.get(1));
+                } else if ((crosschain.getSrcChainType().equals("h2chain") && crosschain.getDstChainType().equals("eth"))) {
+                        crosschain.setResponseHash(hashValues_h2c.get(0));
+                        crosschain.setDstHash(hashValues_eth.get(0));
+                } else if ((crosschain.getSrcChainType().equals("h2chain") && crosschain.getDstChainType().equals("chainmaker"))) {
+                        crosschain.setResponseHash(hashValues_h2c.get(0));
+                        crosschain.setDstHash(hashValues_cmk.get(0));
+                }else if ((crosschain.getSrcChainType().equals("h2chain") && crosschain.getDstChainType().equals("h2chain"))) {
+                        crosschain.setResponseHash(hashValues_h2c.get(0));
+                        crosschain.setDstHash(hashValues_h2c.get(1));
+                }else if ((crosschain.getSrcChainType().equals("chainmaker") && crosschain.getDstChainType().equals("eth"))) {
+                        crosschain.setResponseHash(hashValues_cmk.get(0));
+                        crosschain.setDstHash(hashValues_eth.get(0));
+                }else if ((crosschain.getSrcChainType().equals("chainmaker") && crosschain.getDstChainType().equals("h2chain"))) {
+                    crosschain.setResponseHash(hashValues_cmk.get(0));
+                    crosschain.setDstHash(hashValues_h2c.get(0));
+                }else if ((crosschain.getSrcChainType().equals("chainmaker") && crosschain.getDstChainType().equals("chainmaker"))) {
+                    crosschain.setResponseHash(hashValues_cmk.get(0));
+                    crosschain.setDstHash(hashValues_cmk.get(1));
+                }
+
+
+//                // 检查是否找到匹配
+//                if (matcher_eth.find()) {
+//                    // 提取哈希值
+//                    String hash_eth = matcher_eth.group(1);
+//                    System.out.println("eth链提取的哈希值: " + hash_eth);
+//                    crosschain.setResponseHash(hash_eth);
+//                } else {
+//                    System.out.println("未找到匹配的哈希值");
+//                }
+//                if(crosschain.getSrcChainType().equals("eth") && crosschain.getDstChainType().equals("chainmaker")){
+//                        String regex_eth = "sendToEth.*?(?:交易哈希|txHash)：?\\s?(0x[a-fA-F0-9]{64}|[a-fA-F0-9]{64})";
+//                        Pattern pattern_eth = Pattern.compile(regex_eth);
+//                        Matcher matcher_eth = pattern_eth.matcher(logs);
+//                        // 检查是否找到匹配
+//                        if (matcher_eth.find()) {
+//                            // 提取哈希值
+//                            String hash_eth = matcher_eth.group(1);
+//                            System.out.println("eth链提取的哈希值: " + hash_eth);
+//                            crosschain.setResponseHash(hash_eth);
+//                        } else {
+//                            System.out.println("未找到匹配的哈希值");
+//                        }
+//                        String regex_cmk = "sendToChainmaker.*?(?:交易哈希|txHash):?\\s?([a-fA-F0-9]{64})";
+//                        Pattern pattern_cmk = Pattern.compile(regex_cmk);
+//                        Matcher matcher_cmk= pattern_cmk.matcher(logs);
+//                        // 检查是否找到匹配
+//                        if (matcher_cmk.find()) {
+//                            // 提取哈希值
+//                            String hash_cmk = matcher_cmk.group(1);
+//                            System.out.println("cmk链提取的哈希值: " + hash_cmk);
+//                            crosschain.setDstHash(hash_cmk);
+//                        } else {
+//                            System.out.println("未找到匹配的哈希值");
+//                        }
+//                        crosschain.setSrcIp("192.168.0.2");
+//                        crosschain.setDstIp("192.168.0.2");
+//                        crosschain.setSrcPort(10012);
+//                        crosschain.setDstPort(1000);
+//                }else if(crosschain.getSrcChainType().equals("chainmaker") && crosschain.getDstChainType().equals("h2chain")){
+//                    // 正则表达式模式
+//                    String regex_h2c = "sendToH2Chain.*?(?:交易哈希|txHash):\\s?([a-fA-F0-9]{64})";
+//
+//                    // 编译正则表达式
+//                    Pattern pattern_h2c = Pattern.compile(regex_h2c);
+//
+//                    // 创建匹配器对象
+//                    Matcher matcher_h2c = pattern_h2c.matcher(logs);
+//
+//                    // 检查是否找到匹配
+//                    if (matcher_h2c.find()) {
+//                        // 提取哈希值
+//                        String hash_h2c = matcher_h2c.group(1);
+//                        System.out.println("h2chain提取的哈希值: " + hash_h2c);
+//                        crosschain.setDstHash(hash_h2c);
+//                    } else {
+//                        System.out.println("未找到匹配的哈希值");
+//                    }
+//
+//                    String regex_cmk = "sendToChainmaker.*?(?:交易哈希|txHash):?\\s?([a-fA-F0-9]{64})";
+//                    Pattern pattern_cmk = Pattern.compile(regex_cmk);
+//                    Matcher matcher_cmk= pattern_cmk.matcher(logs);
+//                    // 检查是否找到匹配
+//                    if (matcher_cmk.find()) {
+//                        // 提取哈希值
+//                        String hash_cmk = matcher_cmk.group(1);
+//                        System.out.println("cmk链提取的哈希值: " + hash_cmk);
+//                        crosschain.setResponseHash(hash_cmk);
+//                    } else {
+//                        System.out.println("未找到匹配的哈希值");
+//                    }
+//                    crosschain.setSrcIp("192.168.0.2");
+//                    crosschain.setDstIp("192.168.0.193");
+//                    crosschain.setSrcPort(1000);
+//                    crosschain.setDstPort(8000);
+//                }else if(crosschain.getSrcChainType().equals("h2chain") && crosschain.getDstChainType().equals("eth")){
+//                        // 正则表达式模式
+//                        String regex_h2c = "sendToH2Chain.*?(?:交易哈希|txHash):\\s?([a-fA-F0-9]{64})";
+//
+//                        // 编译正则表达式
+//                        Pattern pattern_h2c = Pattern.compile(regex_h2c);
+//
+//                        // 创建匹配器对象
+//                        Matcher matcher_h2c = pattern_h2c.matcher(logs);
+//
+//                        // 检查是否找到匹配
+//                        if (matcher_h2c.find()) {
+//                            // 提取哈希值
+//                            String hash_h2c = matcher_h2c.group(1);
+//                            System.out.println("h2chain提取的哈希值: " + hash_h2c);
+//                            crosschain.setResponseHash(hash_h2c);
+//                        } else {
+//                            System.out.println("未找到匹配的哈希值");
+//                        }
+//                        String regex_eth = "sendToEth.*?(?:交易哈希|txHash)：?\\s?(0x[a-fA-F0-9]{64}|[a-fA-F0-9]{64})";
+//                        Pattern pattern_eth = Pattern.compile(regex_eth);
+//                        Matcher matcher_eth = pattern_eth.matcher(logs);
+//                        // 检查是否找到匹配
+//                        if (matcher_eth.find()) {
+//                            // 提取哈希值
+//                            String hash_eth = matcher_eth.group(1);
+//                            System.out.println("eth链提取的哈希值: " + hash_eth);
+//                            crosschain.setDstHash(hash_eth);
+//                        } else {
+//                            System.out.println("未找到匹配的哈希值");
+//                        }
+//                    crosschain.setSrcIp("192.168.0.193");
+//                    crosschain.setDstIp("192.168.0.2");
+//                    crosschain.setSrcPort(8000);
+//                    crosschain.setDstPort(10012);
+//                }
 //                // 创建正则表达式模式
 //                Pattern pattern = Pattern.compile("RunChainmaker2H2Chain] 调用长安链成功, 交易哈希: ([a-zA-z0-9]+)");
 //                Pattern pattern1 = Pattern.compile("H2Chain发送成功,交易哈希:([a-zA-z0-9]+)");
