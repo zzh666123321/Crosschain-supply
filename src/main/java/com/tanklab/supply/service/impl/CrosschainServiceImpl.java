@@ -147,9 +147,8 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
         String h2chainTxHash = new String();
         CommonResp responseForF = new CommonResp();
         Crosschain crosschain = new Crosschain().setSrcIp(crossReq.getSrcIp()).setSrcPort(crossReq.getSrcPort()).setDstIp(crossReq.getDstIp()).setDstPort(crossReq.getDstPort()).setSrcChainType(crossReq.getSrcChainType()).setDstChainType(crossReq.getDstChainType());
-        String targetUrl = "http://127.0.0.1:8080/cross_chain?src-chain="+crosschain.getSrcChainType()+"&dst-chain="+crosschain.getDstChainType()+"&src-ip=192.168.0.193&dst-ip=192.168.0.193";
+        String targetUrl = "http://127.0.0.1:8080/cross_chain?src-chain="+crosschain.getSrcChainType()+"&dst-chain="+crosschain.getDstChainType()+"&src-ip=192.168.0.193&dst-ip=192.168.0.32";
 //        crosschain.setSrcIp("192.168.0.2");
-//        crosschain.setDstIp("192.168.0.193");
 //        crosschain.setSrcPort(1000);
 //        crosschain.setDstPort(8000);
         crosschain.setSrcPort(crossReq.getSrcPort());
@@ -157,6 +156,7 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
         crosschain.setSrcIp(crossReq.getSrcIp());
         crosschain.setDstIp(crossReq.getDstIp());
         System.out.println(crosschain);
+//        crosschain.setDstIp("192.168.0.193");
         String logs = "";
         try {
                 URL url = new URL(targetUrl);
@@ -216,7 +216,7 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 Pattern pattern_h2c = Pattern.compile(regex_h2c);
                 Matcher matcher_h2c = pattern_h2c.matcher(logs);
                 ArrayList<String> hashValues_h2c = new ArrayList<>();
-
+            System.out.println(logs);
                 // Iterate over all matches and add them to the list
                 while (matcher_h2c.find()) {
                     hashValues_h2c.add(matcher_h2c.group(1));
