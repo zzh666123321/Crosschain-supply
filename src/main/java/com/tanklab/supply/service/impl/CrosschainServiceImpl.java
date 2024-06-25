@@ -438,7 +438,7 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
             // 设置响应数据
             responseForF.setRet(ResultCode.SUCCESS);
             responseForF.setData(resultObj);
-//            int insert = this.crosschainMapper.insert(crosschain);
+            int insert = this.crosschainMapper.insert(crosschain);
         return responseForF;
         }
 
