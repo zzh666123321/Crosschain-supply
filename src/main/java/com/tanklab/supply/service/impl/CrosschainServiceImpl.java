@@ -420,9 +420,9 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
             resultObj.put("srcHash",crosschain.getSrcHash());
             resultObj.put("dstHash",crosschain.getDstHash());
             resultObj.put("responseHash",crosschain.getResponseHash());
-            crosschain.setSrcHash(chainmakerTxHash);
-            crosschain.setDstHash(h2chainTxHash);
-            crosschain.setResponseHash(ethTxHash);
+            // crosschain.setSrcHash(chainmakerTxHash);
+            // crosschain.setDstHash(h2chainTxHash);
+            // crosschain.setResponseHash(ethTxHash);
 
 //            if(crosschain.getSrcChainType().equals("eth")){
 //                resultObj.put("srcHash", ethTxHash);
