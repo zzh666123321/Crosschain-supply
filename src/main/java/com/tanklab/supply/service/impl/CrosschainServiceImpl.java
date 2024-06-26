@@ -146,10 +146,10 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
         String chainmakerTxHash = new String();
         String h2chainTxHash = new String();
         CommonResp responseForF = new CommonResp();
-        String []srcIpAndPort = crossReq.getSrcIp().split(":");
+        String []srcIpAndPort = crossReq.getSrc().split(":");
         String srcIp = srcIpAndPort[0];
         int  srcPort= Integer.parseInt(srcIpAndPort[1]);
-        String []dstIpAndPort = crossReq.getDstIp().split(":");
+        String []dstIpAndPort = crossReq.getDst().split(":");
         String dstIp = dstIpAndPort[0];
         int  dstPort= Integer.parseInt(dstIpAndPort[1]);
         Crosschain crosschain = new Crosschain().setSrcIp(srcIp).setDstIp(dstIp).setSrcChainType(crossReq.getSrcChainType()).setDstChainType(crossReq.getDstChainType()).setSrcPort(srcPort).setDstPort(dstPort);
