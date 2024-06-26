@@ -12,11 +12,11 @@ import lombok.Data;
     public class CrossReq {
 
         @ApiModelProperty(value = "原链IP")
-        private String srcIp;
+        private String src;
 //        @ApiModelProperty(value = "原链端口")
 //        private int srcPort;
         @ApiModelProperty(value = "目的链IP")
-        private String dstIp;
+        private String dst;
 //        @ApiModelProperty(value = "目的链端口")
 //        private int dstPort;
         @ApiModelProperty(value = "源链类型")
