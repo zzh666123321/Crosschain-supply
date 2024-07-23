@@ -156,7 +156,7 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
         Crosschain crosschain = new Crosschain().setSrcIp(srcIp).setDstIp(dstIp)
                 .setSrcChainType(crossReq.getSrcChainType()).setDstChainType(crossReq.getDstChainType())
                 .setSrcPort(srcPort).setDstPort(dstPort);
-        String targetUrl = "http://192.160.0.44:8080/cross_chain?src-chain=" + crosschain.getSrcChainType()
+        String targetUrl = "http://192.168.0.44:8080/cross_chain?src-chain=" + crosschain.getSrcChainType()
                 + "&dst-chain=" + crosschain.getDstChainType() + "&src-ip=" + srcIp + "&dst-ip=" + dstIp;
         // crosschain.setSrcPort(crossReq.getSrcPort());
         // crosschain.setDstPort(crossReq.getDstPort());
