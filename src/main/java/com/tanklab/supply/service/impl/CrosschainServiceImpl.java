@@ -460,6 +460,152 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
         return responseForF;
     }
 
+    @Override
+    public CommonResp startGateways(String srcIp, String srcChainType, String dstIp, String dstChainType, String relayIp) {
+        CommonResp response = new CommonResp();
+        JSONObject resultObj = new JSONObject();
+        
+        try {
+            // 1. 启动中继链网关
+            startRelayChain(relayIp, resultObj);
+            
+            // 2. 启动源链网关
+            startSourceChain(srcIp, srcChainType, dstIp, dstPort(dstChainType), dstChainType, resultObj);
+            
+            // 3. 启动目标链网关
+            startDestinationChain(dstIp, dstChainType, srcIp, srcPort(srcChainType), srcChainType, resultObj);
+            
+            response.setRet(ResultCode.SUCCESS);
+            response.setData(resultObj);
+            
+        } catch (Exception e) {
+            response.setRet(ResultCode.FAILURE);
+            response.setMessage("启动网关失败: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return response;
+    }
+    
+    /**
+     * 启动中继链网关
+     */
+    private void startRelayChain(String relayIp, JSONObject resultObj) throws Exception {
+        SSHConfig.connect(relayIp);  // 使用默认的用户名和密码
+        String startCmd = "source /etc/profile && source ~/.bashrc && cd /root/shell && nohup ./relay_start.sh > relay.log 2>&1 &";
+        String result = SSHConfig.executeCMD(startCmd, "UTF-8");
+        resultObj.put("relayStartResult", "中继链网关启动成功");
+        resultObj.put("relayStartLog", result);
+    }
+    
+    /**
+     * 启动源链网关
+     */
+    private void startSourceChain(String srcIp, String srcChainType, String dstIp, int dstPort, 
+                                String dstChainType, JSONObject resultObj) throws Exception {
+        SSHConfig.connect(srcIp);  // 使用默认的用户名和密码
+        
+        switch (srcChainType.toLowerCase()) {
+            case "ethereum":
+                String ethCmd = "source /etc/profile && source ~/.bashrc && cd /root/shell && nohup ./eth_start.sh > eth.log 2>&1 &";
+                String ethResult = SSHConfig.executeCMD(ethCmd, "UTF-8");
+                resultObj.put("ethereumStartResult_" + srcIp, "以太坊网关启动成功");
+                resultObj.put("ethereumStartLog_" + srcIp, ethResult);
+                break;
+                
+            case "chainmaker":
+                String chainId = String.valueOf(getChainId("chainmaker", srcIp));
+                //todo: for local test
+                String cmCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup ./chainmaker_start1.sh %s %s %d > chainmaker.log 2>&1 &", "12002","192.168.0.2", "8086");
+                String cmResult = SSHConfig.executeCMD(cmCmd, "UTF-8");
+                resultObj.put("chainmakerStartResult_" + srcIp, "长安链网关启动成功");
+                resultObj.put("chainmakerStartLog_" + srcIp, cmResult); 
+                break;
+                
+            case "h2chain":
+                String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup ./h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(dstChainType, dstIp));
+                String h2cResult = SSHConfig.executeCMD(h2cCmd, "UTF-8");
+                resultObj.put("h2chainStartResult_" + srcIp, "海河链网关启动成功");
+                resultObj.put("h2chainStartLog_" + srcIp, h2cResult);
+                break;
+                
+            default:
+                throw new IllegalArgumentException("不支持的源链类型: " + srcChainType);
+        }
+    }
+    
+    /**
+     * 启动目标链网关
+     */
+    private void startDestinationChain(String dstIp, String dstChainType, String srcIp, int srcPort,
+                                     String srcChainType, JSONObject resultObj) throws Exception {
+        SSHConfig.connect(dstIp);  // 使用默认的用户名和密码
+        
+        switch (dstChainType.toLowerCase()) {
+            case "ethereum":
+                String ethCmd = "source /etc/profile && source ~/.bashrc && cd /root/shell && nohup ./eth_start.sh > eth.log 2>&1 &";
+                String ethResult = SSHConfig.executeCMD(ethCmd, "UTF-8");
+                resultObj.put("ethereumStartResult_" + dstIp, "以太坊网关启动成功");
+                resultObj.put("ethereumStartLog_" + dstIp, ethResult);
+                break;
+                
+            case "chainmaker":
+                String chainId = String.valueOf(getChainId("chainmaker", dstIp));
+                //todo: for local test
+                String cmCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup ./chainmaker_start1.sh %s %s %d > chainmaker.log 2>&1 &", "12002","192.168.0.2", 8086);
+                String cmResult = SSHConfig.executeCMD(cmCmd, "UTF-8");
+                resultObj.put("chainmakerStartResult_" + dstIp, "长安链网关启动成功");
+                resultObj.put("chainmakerStartLog_" + dstIp, cmResult);
+                break;
+                
+            case "h2chain":
+                String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup ./h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(srcChainType, srcIp));
+                String h2cResult = SSHConfig.executeCMD(h2cCmd, "UTF-8");
+                resultObj.put("h2chainStartResult_" + dstIp, "海河链网关启动成功");
+                resultObj.put("h2chainStartLog_" + dstIp, h2cResult);
+                break;
+                
+            default:
+                throw new IllegalArgumentException("不支持的目标链类型: " + dstChainType);
+        }
+    }
+    
+    /**
+     * 获取链的默认端口
+     */
+    private int srcPort(String chainType) {
+        switch (chainType.toLowerCase()) {
+            case "ethereum": return 8086;
+            case "chainmaker": return 8088;
+            case "h2chain": return 8087;
+            default: throw new IllegalArgumentException("不支持的链类型: " + chainType);
+        }
+    }
+    
+    /**
+     * 获取链的默认端口
+     */
+    private int dstPort(String chainType) {
+        return srcPort(chainType);
+    }
+    
+    /**
+     * 计算链ID
+     */
+    private int getChainId(String chainType, String ip) {
+        // 从IP地址中提取最后一个数字
+        String[] parts = ip.split("\\.");
+        int lastNumber = Integer.parseInt(parts[3]);
+        
+        // 根据链类型计算chainId
+        switch (chainType.toLowerCase()) {
+            case "ethereum": return 12000 + lastNumber;
+            case "chainmaker": return 11000 + lastNumber;
+            case "h2chain": return 13000 + lastNumber;
+            default: throw new IllegalArgumentException("不支持的链类型: " + chainType);
+        }
+    }
+
 }
 
 // public CommonResp doCross(CrossReq crossreq) {
