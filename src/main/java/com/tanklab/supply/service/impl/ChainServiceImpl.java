@@ -22,6 +22,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterNumber;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.protocol.websocket.WebSocketService;
 
 import java.util.concurrent.TimeUnit;
 import org.web3j.protocol.Web3j;
@@ -69,19 +70,24 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
     @Autowired
     public ChainServiceImpl ChainService;
 
-    private static String cmcpath = "~/CIPS-H2Chain";
+    private static String cmcpath = "~/CIPS-Gemini-ChainMaker/chainmaker/chainmaker-go/tools/cmc";
     // server服务器 ~/CIPS-H2Chain
     // 学弟服务器 ~/ChainMaker/chainmaker-go/tools/cmc
 
-    private static String cmcexepath = ".cmc";
+    private static String cmcexepath = "./cmc";
     // server服务器 ./chainmaker-go/tools/cmc/cmc
     // 学弟服务器 ./cmc
 
-    private static String ethname = "ETH";
-    private static String chainmakername = "ChainMaker";
-    private static String h2Chainname = "H2Chain";
+    private static String ethname = "8086";
+    private static String h2Chainname = "8087";
+    private static String chainmakername = "8088";
+    private static String bubiname = "8089";
+    private static String fabricname = "8090";
+    private static String liantongname = "8091";
 
-    private static String sdktype = "/root/CIPS-H2Chain/chainmaker/config_files/sdkconfigs/chain3_sdkconfig1.yml";
+    private static String ethWsPort = "10026";
+
+    private static String sdktype = "./testdata/sdk_config_pk.yml";
     // server服务器
     // /root/CIPS-H2Chain/chainmaker/config_files/sdkconfigs/chain3_sdkconfig1.yml
     // 学弟服务器 ./testdata/sdk_config.yml
@@ -90,19 +96,88 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
     public CommonResp querychainInfo() {
         CommonResp querychainresp = new CommonResp();
 
-        QueryWrapper<Chain> wrapper = new QueryWrapper<>();
-        wrapper.select("chain_id", "ip_address", "port", "chain_type");
-        List<Chain> chains = chainMapper.selectList(wrapper);
+        // QueryWrapper<Chain> wrapper = new QueryWrapper<>();
+        // wrapper.select("chain_id", "ip_address", "port", "chain_type");
+        // List<Chain> chains = chainMapper.selectList(wrapper);
+
+        // private Integer chainId;
+        // private String ipAddress;
+        // private Integer port;
+        // private String chainType;
+
+        Integer chainmakerId = 11001;
+        Integer ethId = 12001;
+        Integer h2chainId = 13001;
+        Integer bubiId = 14001;
+        Integer fabricId = 15001;
+        Integer liantongId = 16001;
+
+        String ip = "192.168.0.";
+
+        Integer ethPort = 8086;
+        String ethname = "eth";
+
+        Integer h2chainPort = 8087;
+        String h2chainname = "h2chain";
+
+        Integer chainmakerPort = 8088;
+        String chainmakername = "chainmaker";
+
+        Integer bubiPort = 8089;
+        String bubiname = "bubi";
+
+        Integer fabricPort = 8090;
+        String fabric = "fabric";
+
+        Integer liantongPort = 8091;
+        String liantong = "liantong";
+
+        Integer chainsize = 20;
 
         JSONObject chainsinfo = new JSONObject();
         JSONArray chainsarr = new JSONArray();
-        for (int i = 0; i < chains.size(); i++) {
-            JSONObject perchaininfo = new JSONObject();
-            perchaininfo.put("chainId", chains.get(i).getChainId());
-            perchaininfo.put("ipAddress", chains.get(i).getIpAddress());
-            perchaininfo.put("port", chains.get(i).getPort());
-            perchaininfo.put("chainType", chains.get(i).getChainType());
-            chainsarr.add(perchaininfo);
+        for (int i = 1; i <= chainsize; i++) {
+            JSONObject chainmakerinfo = new JSONObject();
+            chainmakerinfo.put("chainId", chainmakerId + i);
+            chainmakerinfo.put("ipAddress", ip + String.valueOf(i + 1));
+            chainmakerinfo.put("port", chainmakerPort);
+            chainmakerinfo.put("chainType", chainmakername);
+            chainsarr.add(chainmakerinfo);
+
+            JSONObject ethinfo = new JSONObject();
+            ethinfo.put("chainId", ethId + i);
+            ethinfo.put("ipAddress", ip + String.valueOf(i + 1));
+            ethinfo.put("port", ethPort);
+            ethinfo.put("chainType", ethname);
+            chainsarr.add(ethinfo);
+
+            JSONObject h2chaininfo = new JSONObject();
+            h2chaininfo.put("chainId", h2chainId + i);
+            h2chaininfo.put("ipAddress", ip + String.valueOf(i + 1));
+            h2chaininfo.put("port", h2chainPort);
+            h2chaininfo.put("chainType", h2chainname);
+            chainsarr.add(h2chaininfo);
+
+            JSONObject bubiinfo = new JSONObject();
+            bubiinfo.put("chainId", bubiId + i);
+            bubiinfo.put("ipAddress", ip + String.valueOf(i + 1));
+            bubiinfo.put("port", bubiPort);
+            bubiinfo.put("chainType", bubiname);
+            chainsarr.add(bubiinfo);
+
+            JSONObject fabricinfo = new JSONObject();
+            fabricinfo.put("chainId", fabricId + i);
+            fabricinfo.put("ipAddress", ip + String.valueOf(i + 1));
+            fabricinfo.put("port", fabricPort);
+            fabricinfo.put("chainType", fabric);
+            chainsarr.add(fabricinfo);
+
+            JSONObject liantonginfo = new JSONObject();
+            liantonginfo.put("chainId", liantongId + i);
+            liantonginfo.put("ipAddress", ip + String.valueOf(i + 1));
+            liantonginfo.put("port", liantongPort);
+            liantonginfo.put("chainType", liantong);
+            chainsarr.add(liantonginfo);
         }
         chainsinfo.put("chainsinfo", chainsarr);
         querychainresp.setRet(ResultCode.SUCCESS);
@@ -116,39 +191,64 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
         String ipAddress = chainreq.getChainIP().substring(0, colonIndex);
         String portNumber = chainreq.getChainIP().substring(colonIndex + 1);
 
-        QueryWrapper<Chain> wrapper = new QueryWrapper<>();
-        wrapper.select("chain_type");
-        wrapper.eq("ip_address", ipAddress);
-        wrapper.eq("port", portNumber);
-        Chain chain = chainMapper.selectOne(wrapper);
-        String chainType = chain.getChainType();
+        // QueryWrapper<Chain> wrapper = new QueryWrapper<>();
+        // wrapper.select("chain_type");
+        // wrapper.eq("ip_address", ipAddress);
+        // wrapper.eq("port", portNumber);
+        // Chain chain = chainMapper.selectOne(wrapper);
+        // String chainType = chain.getChainType();
 
         CommonResp chainresp = new CommonResp();
         // System.out.println(chainreq.getChainIP());
-        if (chainType.equals(ethname)) {
-            try {
-                // 创建 OkHttpClient 实例，并设置超时时间
-                OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                        .connectTimeout(1000, TimeUnit.SECONDS)
-                        .readTimeout(1000, TimeUnit.SECONDS);
+        if (portNumber.equals(ethname)) {
+            // try {
+            // // 创建 OkHttpClient 实例，并设置超时时间
+            // OkHttpClient.Builder builder = new OkHttpClient.Builder()
+            // .connectTimeout(1000, TimeUnit.SECONDS)
+            // .readTimeout(1000, TimeUnit.SECONDS);
 
-                // 创建自定义的 HttpService，并传入 OkHttpClient 实例
-                HttpService httpService = new HttpService("http://" + chainreq.getChainIP(), builder.build());
-                // HttpService httpService = new
-                // HttpService(String.valueOf("http://116.204.36.31:10012"), builder.build());
+            // // 创建自定义的 HttpService，并传入 OkHttpClient 实例
+            // HttpService httpService = new HttpService("http://" + ipAddress + ":10012",
+            // builder.build());
+            // // HttpService httpService = new
+            // // HttpService(String.valueOf("http://116.204.36.31:10012"),
+            // builder.build());
+            // // 创建 Web3j 实例
+            // Web3j web3j = Web3j.build(httpService);
+
+            // // 查询该链的块高
+            // BigInteger blockHeight = web3j.ethBlockNumber().send().getBlockNumber();
+            // JSONObject heightinfo = new JSONObject();
+            // heightinfo.put("heightinfo", blockHeight);
+            // chainresp.setData(heightinfo);
+            // } catch (IOException e) {
+            // e.printStackTrace();
+            // chainresp.setData("Failed to connect to the blockchain node.");
+            // }
+
+            WebSocketService webSocketService = null;
+            try {
+                // WebSocket 地址
+                String wsUrl = "ws://" + ipAddress + ":" + ethWsPort;
+
+                // 创建 WebSocketService，并自动连接
+                webSocketService = new WebSocketService(wsUrl, true);
+                webSocketService.connect(); // 连接 WebSocket
+
                 // 创建 Web3j 实例
-                Web3j web3j = Web3j.build(httpService);
+                Web3j web3j = Web3j.build(webSocketService);
 
                 // 查询该链的块高
                 BigInteger blockHeight = web3j.ethBlockNumber().send().getBlockNumber();
                 JSONObject heightinfo = new JSONObject();
                 heightinfo.put("heightinfo", blockHeight);
                 chainresp.setData(heightinfo);
-            } catch (IOException e) {
+
+            } catch (Exception e) {
                 e.printStackTrace();
-                chainresp.setData("Failed to connect to the blockchain node.");
+                chainresp.setData("Error retrieving block height.");
             }
-        } else if (chainType.equals(chainmakername)) {
+        } else if (portNumber.equals(chainmakername)) {
             String logs = "";
             try {
                 SSHConfig.connect(ipAddress);
@@ -166,7 +266,53 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             JSONObject heightinfo = new JSONObject();
             heightinfo.put("heightinfo", blockHeight);
             chainresp.setData(heightinfo);
+        } else if (portNumber.equals(h2Chainname)) {
+            String targetUrl = "http://" + ipAddress + ":8000/api/blockChain/blockHeight";
+            try {
+                URL url = new URL(targetUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+                BigInteger blockHeight = BigInteger.valueOf(Long.parseLong(response.toString()));
+                JSONObject heightinfo = new JSONObject();
+                heightinfo.put("heightinfo", blockHeight);
+                chainresp.setData(heightinfo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (portNumber.equals(bubiname)) {
+            String targetUrl = "http://" + ipAddress + ":19333/getLedger";
+            try {
+                URL url = new URL(targetUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+                JsonObject headerJsonObj = JsonParser.parseString(response.toString()).getAsJsonObject()
+                        .getAsJsonObject("result")
+                        .getAsJsonObject("header");
+                BigInteger height = headerJsonObj.get("seq").getAsBigInteger();
+                JSONObject heightinfo = new JSONObject();
+                heightinfo.put("heightinfo", height);
+                chainresp.setData(heightinfo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
+            // fabric liantong 暂用h2数据
             String targetUrl = "http://" + ipAddress + ":8000/api/blockChain/blockHeight";
             try {
                 URL url = new URL(targetUrl);
@@ -198,19 +344,40 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
         String ipAddress = blockheightReq.getChainIP().substring(0, colonIndex);
         String portNumber = blockheightReq.getChainIP().substring(colonIndex + 1);
 
-        QueryWrapper<Chain> wrapper = new QueryWrapper<>();
-        wrapper.select("chain_type");
-        wrapper.eq("ip_address", ipAddress);
-        wrapper.eq("port", portNumber);
-        Chain chain = chainMapper.selectOne(wrapper);
-        String chainType = chain.getChainType();
+        // QueryWrapper<Chain> wrapper = new QueryWrapper<>();
+        // wrapper.select("chain_type");
+        // wrapper.eq("ip_address", ipAddress);
+        // wrapper.eq("port", portNumber);
+        // Chain chain = chainMapper.selectOne(wrapper);
+        // String chainType = chain.getChainType();
         // 用块高来查询
         // 查询指定块高的区块信息
-        if (chainType.equals(ethname)) {
-            Web3j web3j = Web3j.build(new HttpService("http://" + blockheightReq.getChainIP())); // 替换为你的节点地址
+        if (portNumber.equals(ethname)) {
+            // Web3j web3j = Web3j.build(new HttpService("http://" +
+            // blockheightReq.getChainIP())); // 替换为你的节点地址
+
+            WebSocketService webSocketService = null;
             try {
+                // DefaultBlockParameter blockParameter = new DefaultBlockParameterNumber(
+                // Long.parseLong(blockheightReq.getBlockHEIGHT()));
+                // EthBlock.Block block = web3j.ethGetBlockByNumber(blockParameter, false)
+                // .send()
+                // .getBlock();
+
+                // WebSocket 地址（确保 Geth 启用了 WebSocket 并监听 10026 端口）
+                String wsUrl = "ws://" + ipAddress + ":" + ethWsPort;
+
+                // 创建 WebSocketService
+                webSocketService = new WebSocketService(wsUrl, true);
+                webSocketService.connect(); // 连接 WebSocket
+
+                // 创建 Web3j 实例
+                Web3j web3j = Web3j.build(webSocketService);
+
+                // 获取指定区块的信息
                 DefaultBlockParameter blockParameter = new DefaultBlockParameterNumber(
                         Long.parseLong(blockheightReq.getBlockHEIGHT()));
+
                 EthBlock.Block block = web3j.ethGetBlockByNumber(blockParameter, false)
                         .send()
                         .getBlock();
@@ -247,7 +414,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 queryBlockInfoResp.setData("Failed to connect to the blockchain node.");
             }
             System.out.println("-------ETH区块信息查询完毕-------");
-        } else if (chainType.equals(chainmakername)) {
+        } else if (portNumber.equals(chainmakername)) {
             String logs = "";
             try {
                 SSHConfig.connect(ipAddress);
@@ -291,7 +458,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             queryBlockInfoResp.setData(blockInfo);
 
             System.out.println("-------ChainMaker区块信息查询完毕-------");
-        } else {
+        } else if (portNumber.equals(h2Chainname)) {
             String targetUrl = "http://" + ipAddress + ":8000/api/blockChain/blockByHeight?blockHeight="
                     + blockheightReq.getBlockHEIGHT() + "&includeTransactions=true";
             String logs = "";
@@ -343,6 +510,110 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             queryBlockInfoResp.setData(blockInfo);
 
             System.out.println("-------H2CHain区块信息查询完毕-------");
+        } else if (portNumber.equals(bubiname)) {
+            String targetUrl = "http://" + ipAddress + ":19333/getLedger?seq=" + blockheightReq.getBlockHEIGHT();
+            try {
+                URL url = new URL(targetUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+                JsonObject headerJsonObj = JsonParser.parseString(response.toString()).getAsJsonObject()
+                        .getAsJsonObject("result")
+                        .getAsJsonObject("header");
+
+                BigInteger height = headerJsonObj.get("seq").getAsBigInteger();
+                String accountTreeHash = headerJsonObj.get("account_tree_hash").getAsString();
+                String closeTime = headerJsonObj.get("close_time").getAsString();
+                String consensusValueHash = headerJsonObj.get("consensus_value_hash").getAsString();
+                String feesHash = headerJsonObj.get("fees_hash").getAsString();
+                String hash = headerJsonObj.get("hash").getAsString();
+                String previousHash = headerJsonObj.get("previous_hash").getAsString();
+                String validatorsHash = headerJsonObj.get("validators_hash").getAsString();
+                String version = headerJsonObj.get("version").getAsString();
+
+                JSONObject blockInfo = new JSONObject();
+                blockInfo.put("height", height);
+                blockInfo.put("accountTreeHash", accountTreeHash);
+                blockInfo.put("closeTime", closeTime);
+                blockInfo.put("consensusValueHash", consensusValueHash);
+                blockInfo.put("feesHash", feesHash);
+                blockInfo.put("hash", hash);
+                blockInfo.put("previousHash", previousHash);
+                blockInfo.put("validatorsHash", validatorsHash);
+                blockInfo.put("version", version);
+
+                queryBlockInfoResp.setRet(ResultCode.SUCCESS);
+                queryBlockInfoResp.setData(blockInfo);
+
+                System.out.println("-------BuBi区块信息查询完毕-------");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // fabric liantong 暂用h2数据
+            String targetUrl = "http://" + ipAddress + ":8000/api/blockChain/blockByHeight?blockHeight="
+                    + blockheightReq.getBlockHEIGHT() + "&includeTransactions=true";
+            String logs = "";
+            try {
+                URL url = new URL(targetUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+                logs = response.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // System.out.println("查询结束...");
+            JsonObject headerJsonObj = JsonParser.parseString(logs).getAsJsonObject().getAsJsonObject("Header");
+            BigInteger blockHeight = headerJsonObj.get("Height").getAsBigInteger();
+            String blockHash = JsonParser.parseString(logs).getAsJsonObject().get("BlockHash").getAsString();
+            String timeStamp = headerJsonObj.get("Time").getAsString();
+            BigInteger blockSize = JsonParser.parseString(logs).getAsJsonObject().get("BlockSize").getAsBigInteger();
+            BigInteger transactionCount = JsonParser.parseString(logs).getAsJsonObject().getAsJsonObject("Body")
+                    .get("TransactionsCount").getAsBigInteger();
+            String previousBlockHash = headerJsonObj.get("PreviousBlockHash").getAsString();
+            String merkleTreeRootOfWorldState = headerJsonObj.get("MerkleTreeRootOfWorldState").getAsString();
+            String merkleTreeRootOfTransactions = headerJsonObj.get("MerkleTreeRootOfTransactions").getAsString();
+            String merkleTreeRootOfTransactionState = headerJsonObj.get("MerkleTreeRootOfTransactionState")
+                    .getAsString();
+            String signerPubkey = headerJsonObj.get("SignerPubkey").getAsString();
+
+            JSONObject blockInfo = new JSONObject();
+            blockInfo.put("blockHeight", blockHeight);
+            blockInfo.put("blockHash", blockHash);
+            blockInfo.put("timeStamp", timeStamp);
+            blockInfo.put("blockSize", blockSize);
+            blockInfo.put("transactionCount", transactionCount);
+            blockInfo.put("previousBlockHash", previousBlockHash);
+            blockInfo.put("merkleTreeRootOfWorldState", merkleTreeRootOfWorldState);
+            blockInfo.put("merkleTreeRootOfTransactions", merkleTreeRootOfTransactions);
+            blockInfo.put("merkleTreeRootOfTransactionState", merkleTreeRootOfTransactionState);
+            blockInfo.put("signerPubkey", signerPubkey);
+
+            queryBlockInfoResp.setRet(ResultCode.SUCCESS);
+            queryBlockInfoResp.setData(blockInfo);
+
+            String temporaryname = "";
+            if (portNumber.equals(fabricname))
+                temporaryname = "fabric";
+            else
+                temporaryname = "联通";
+            System.out.println("-------" + temporaryname + "区块信息查询完毕-------");
         }
 
         return queryBlockInfoResp;
@@ -354,30 +625,48 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
         String ipAddress = chainreq.getChainIP().substring(0, colonIndex);
         String portNumber = chainreq.getChainIP().substring(colonIndex + 1);
 
-        QueryWrapper<Chain> wrapper = new QueryWrapper<>();
-        wrapper.select("chain_type");
-        wrapper.eq("ip_address", ipAddress);
-        wrapper.eq("port", portNumber);
-        Chain chain = chainMapper.selectOne(wrapper);
-        String chainType = chain.getChainType();
+        // QueryWrapper<Chain> wrapper = new QueryWrapper<>();
+        // wrapper.select("chain_type");
+        // wrapper.eq("ip_address", ipAddress);
+        // wrapper.eq("port", portNumber);
+        // Chain chain = chainMapper.selectOne(wrapper);
+        // String chainType = chain.getChainType();
 
         JSONArray blocks = new JSONArray();
-        if (chainType.equals(ethname)) {
+        if (portNumber.equals(ethname)) {
             BigInteger blockHeight = new BigInteger("0");
+            WebSocketService webSocketService = null;
+            // WebSocket 地址
+            String wsUrl = "ws://" + ipAddress + ":" + ethWsPort;
+
+            // 创建 WebSocketService
+            webSocketService = new WebSocketService(wsUrl, true);
             try {
-                // 创建 OkHttpClient 实例，并设置超时时间
-                OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                        .connectTimeout(1000, TimeUnit.SECONDS)
-                        .readTimeout(1000, TimeUnit.SECONDS);
+                webSocketService.connect(); // 连接 WebSocket
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // 创建 Web3j 实例
+            Web3j web3j = Web3j.build(webSocketService);
+            try {
+                // // 创建 OkHttpClient 实例，并设置超时时间
+                // OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                // .connectTimeout(1000, TimeUnit.SECONDS)
+                // .readTimeout(1000, TimeUnit.SECONDS);
 
-                // 创建自定义的 HttpService，并传入 OkHttpClient 实例
-                HttpService httpService = new HttpService("http://" + chainreq.getChainIP(), builder.build());
-                // HttpService httpService = new
-                // HttpService(String.valueOf("http://116.204.36.31:10012"), builder.build());
-                // 创建 Web3j 实例
-                Web3j web3j = Web3j.build(httpService);
+                // // 创建自定义的 HttpService，并传入 OkHttpClient 实例
+                // HttpService httpService = new HttpService("http://" + chainreq.getChainIP(),
+                // builder.build());
+                // // HttpService httpService = new
+                // // HttpService(String.valueOf("http://116.204.36.31:10012"),
+                // builder.build());
+                // // 创建 Web3j 实例
+                // Web3j web3j = Web3j.build(httpService);
 
-                // 查询该链的块高
+                // // 查询该链的块高
+                // blockHeight = web3j.ethBlockNumber().send().getBlockNumber();
+
+                // 查询当前块高
                 blockHeight = web3j.ethBlockNumber().send().getBlockNumber();
 
             } catch (IOException e) {
@@ -385,10 +674,16 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             }
             int j = 0;
             for (BigInteger i = blockHeight; i.compareTo(BigInteger.ZERO) >= 0; i = i.subtract(new BigInteger("1"))) {
-                Web3j web3j = Web3j.build(new HttpService("http://" + chainreq.getChainIP())); // 替换为你的节点地址
+                // Web3j web3j = Web3j.build(new HttpService("http://" +
+                // chainreq.getChainIP())); // 替换为你的节点地址
                 try {
-                    DefaultBlockParameter blockParameter = new DefaultBlockParameterNumber(
-                            Long.parseLong(i.toString()));
+                    // DefaultBlockParameter blockParameter = new DefaultBlockParameterNumber(
+                    // Long.parseLong(i.toString()));
+                    // EthBlock.Block block = web3j.ethGetBlockByNumber(blockParameter, false)
+                    // .send()
+                    // .getBlock();
+
+                    DefaultBlockParameter blockParameter = new DefaultBlockParameterNumber(i);
                     EthBlock.Block block = web3j.ethGetBlockByNumber(blockParameter, false)
                             .send()
                             .getBlock();
@@ -429,7 +724,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 }
             }
             System.out.println("-------ETH最新十个区块信息查询完毕-------");
-        } else if (chainType.equals(chainmakername)) {
+        } else if (portNumber.equals(chainmakername)) {
             String logs = "";
             try {
                 SSHConfig.connect(ipAddress);
@@ -492,7 +787,7 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                     break;
             }
             System.out.println("-------ChainMaker最新十个区块信息查询完毕-------");
-        } else {
+        } else if (portNumber.equals(h2Chainname)) {
             // String targetUrl = "http://116.204.36.31:8000/api/blockChain/blockHeight";
             BigInteger height = new BigInteger("0");
             try {
@@ -567,6 +862,157 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                     break;
             }
             System.out.println("-------H2Chain最新十个区块信息查询完毕-------");
+        } else if (portNumber.equals(bubiname)) {
+            BigInteger height = new BigInteger("0");
+            try {
+                URL url = new URL("http://" + ipAddress + ":19333/getLedger");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+                JsonObject headerJsonObj = JsonParser.parseString(response.toString()).getAsJsonObject()
+                        .getAsJsonObject("result")
+                        .getAsJsonObject("header");
+                height = headerJsonObj.get("seq").getAsBigInteger();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            int j = 0;
+            for (BigInteger i = height; i.compareTo(BigInteger.ZERO) >= 0; i = i.subtract(new BigInteger("1"))) {
+                String targetUrl = "http://" + ipAddress + ":19333/getLedger?seq=" + i.toString();
+                try {
+                    URL url = new URL(targetUrl);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String inputLine;
+                    StringBuilder response = new StringBuilder();
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+                    JsonObject headerJsonObj = JsonParser.parseString(response.toString()).getAsJsonObject()
+                            .getAsJsonObject("result")
+                            .getAsJsonObject("header");
+
+                    BigInteger blockHeight = headerJsonObj.get("seq").getAsBigInteger();
+                    String accountTreeHash = headerJsonObj.get("account_tree_hash").getAsString();
+                    String closeTime = headerJsonObj.get("close_time").getAsString();
+                    String consensusValueHash = headerJsonObj.get("consensus_value_hash").getAsString();
+                    String feesHash = headerJsonObj.get("fees_hash").getAsString();
+                    String hash = headerJsonObj.get("hash").getAsString();
+                    String previousHash = headerJsonObj.get("previous_hash").getAsString();
+                    String validatorsHash = headerJsonObj.get("validators_hash").getAsString();
+                    String version = headerJsonObj.get("version").getAsString();
+
+                    JSONObject blockInfo = new JSONObject();
+                    blockInfo.put("blockHeight", blockHeight);
+                    blockInfo.put("accountTreeHash", accountTreeHash);
+                    blockInfo.put("closeTime", closeTime);
+                    blockInfo.put("consensusValueHash", consensusValueHash);
+                    blockInfo.put("feesHash", feesHash);
+                    blockInfo.put("hash", hash);
+                    blockInfo.put("previousHash", previousHash);
+                    blockInfo.put("validatorsHash", validatorsHash);
+                    blockInfo.put("version", version);
+
+                    j++;
+                    blocks.add(blockInfo);
+                    if (j == 10)
+                        break;
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("-------BuBi最新十个区块信息查询完毕-------");
+        } else {
+            // fabric liantong 暂用h2数据
+            BigInteger height = new BigInteger("0");
+            try {
+                URL url = new URL("http://" + ipAddress + ":8000/api/blockChain/blockHeight");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+                height = BigInteger.valueOf(Long.parseLong(response.toString()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            int j = 0;
+            for (BigInteger i = height; i.compareTo(BigInteger.ZERO) >= 0; i = i.subtract(new BigInteger("1"))) {
+                String targetUrl = "http://" + ipAddress + ":8000/api/blockChain/blockByHeight?blockHeight="
+                        + i.toString() + "&includeTransactions=true";
+                String logs = "";
+                try {
+                    URL url = new URL(targetUrl);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String inputLine;
+                    StringBuilder response = new StringBuilder();
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+                    logs = response.toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                // System.out.println("H2hain查询结束...");
+                JsonObject headerJsonObj = JsonParser.parseString(logs).getAsJsonObject().getAsJsonObject("Header");
+                BigInteger blockHeight = headerJsonObj.get("Height").getAsBigInteger();
+                String blockHash = JsonParser.parseString(logs).getAsJsonObject().get("BlockHash").getAsString();
+                String timeStamp = headerJsonObj.get("Time").getAsString();
+                BigInteger blockSize = JsonParser.parseString(logs).getAsJsonObject().get("BlockSize")
+                        .getAsBigInteger();
+                BigInteger transactionCount = JsonParser.parseString(logs).getAsJsonObject().getAsJsonObject("Body")
+                        .get("TransactionsCount").getAsBigInteger();
+                String previousBlockHash = headerJsonObj.get("PreviousBlockHash").getAsString();
+                String merkleTreeRootOfWorldState = headerJsonObj.get("MerkleTreeRootOfWorldState").getAsString();
+                String merkleTreeRootOfTransactions = headerJsonObj.get("MerkleTreeRootOfTransactions").getAsString();
+                String merkleTreeRootOfTransactionState = headerJsonObj.get("MerkleTreeRootOfTransactionState")
+                        .getAsString();
+                String signerPubkey = headerJsonObj.get("SignerPubkey").getAsString();
+
+                JSONObject blockInfo = new JSONObject();
+                blockInfo.put("blockHeight", blockHeight);
+                blockInfo.put("blockHash", blockHash);
+                blockInfo.put("timeStamp", timeStamp);
+                blockInfo.put("blockSize", blockSize);
+                blockInfo.put("transactionCount", transactionCount);
+                blockInfo.put("previousBlockHash", previousBlockHash);
+                blockInfo.put("merkleTreeRootOfWorldState", merkleTreeRootOfWorldState);
+                blockInfo.put("merkleTreeRootOfTransactions", merkleTreeRootOfTransactions);
+                blockInfo.put("merkleTreeRootOfTransactionState", merkleTreeRootOfTransactionState);
+                blockInfo.put("signerPubkey", signerPubkey);
+
+                j++;
+                blocks.add(blockInfo);
+                if (j == 10)
+                    break;
+            }
+            String temporaryname = "";
+            if (portNumber.equals(fabricname))
+                temporaryname = "fabric";
+            else
+                temporaryname = "联通";
+            System.out.println("-------" + temporaryname + "最新十个区块信息查询完毕-------");
         }
         JSONObject tenblocks = new JSONObject();
         tenblocks.put("tenBlocksInfo", blocks);

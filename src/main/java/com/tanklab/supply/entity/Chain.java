@@ -23,21 +23,20 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("chain_info")
-@ApiModel(value="Chain对象", description="链信息表")
+@ApiModel(value = "Chain对象", description = "链信息表")
 public class Chain implements Serializable {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
-    @TableId(value = "chain_id", type = IdType.AUTO)
+    @TableId(value = "chain_id")
     private Integer chainId;
+
     private String ipAddress;
 
     private Integer port;
 
     private String chainType;
 
-    //private Boolean isProcessed;
-
-
+    // private Boolean isProcessed;
 
 }
