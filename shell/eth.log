@@ -1,4 +1,37 @@
-启动以太坊网关...
-SUCCESS: 以太坊网关已启动
-PID: 31290
-LOG: /root/CIPS-Gemini-Ethereum/logs/eth_20250228_151710.log
+Starting relayer with configuration file: config.toml
+[32m2025-03-05 08:00:12	[INFO]:	Relayer started...[39m
+[32m2025-03-05 08:00:12	[INFO]:	Reading config file...[39m
+[32m2025-03-05 08:00:12	[INFO]:	Config file read successfully.[39m
+[32m2025-03-05 08:00:12	[INFO]:	Loading config...[39m
+[32m2025-03-05 08:00:12	[INFO]:	Config loaded successfully.[39m
+[34m2025-03-05 08:00:12	[DEBG]:	Relayer config Aggregator_addr: 0x56E27D4dd765d2632B927Dd049CC70baC333dF4d[39m
+[34m2025-03-05 08:00:12	[DEBG]:	Relayer config Transport_addr: 0xDA99Fc6cdd13E306143498DB0637cCe983d2375e[39m
+[32m2025-03-05 08:00:12	[INFO]:	Registering contracts...[39m
+[32m2025-03-05 08:00:12	[INFO]:	Registering gateways...[39m
+[34m2025-03-05 08:00:12	[DEBG]:	relayer.aggregator_addr: 0x56E27D4dd765d2632B927Dd049CC70baC333dF4d[39m
+[34m2025-03-05 08:00:12	[DEBG]:	relayer.transport_addr: 0xDA99Fc6cdd13E306143498DB0637cCe983d2375e[39m
+[32m2025-03-05 08:00:12	[INFO]:	Initializing relayer...[39m
+[32m2025-03-05 08:00:12	[INFO]:	Running relayer...[39m
+[32m2025-03-05 08:00:12	[INFO]:	Chain ID - 12002 : relayer started...[39m
+[32m2025-03-05 08:00:12	[INFO]:	<nil>: start verification protocol: 2[39m
+[32m2025-03-05 08:00:12	[INFO]:	<nil>: start verification protocol: 1[39m
+[34m2025-03-05 08:00:12	[DEBG]:	<nil>: start verification layer watch_q_req_tspt_vrfy thread![39m
+[34m2025-03-05 08:00:12	[DEBG]:	<nil>: start verification layer watch_q_req_pre_tspt_vrfy thread![39m
+[34m2025-03-05 08:00:12	[DEBG]:	<nil>: start verification layer watch_q_resp_tspt_vrfy thread![39m
+[34m2025-03-05 08:00:12	[DEBG]:	<nil>: start verification layer watch_q_resp_pre_tspt_vrfy thread![39m
+[32m2025-03-05 08:00:12	[INFO]:	Notary update: XXX[39m
+[32m2025-03-05 08:00:12	[INFO]:	SPV update: XXX[39m
+[32m2025-03-05 08:00:13	[INFO]:	Chain ID - 12002 : relayer_verification started successfully.[39m
+[32m2025-03-05 08:00:13	[INFO]:	12002: start transport layer watch thread![39m
+[32m2025-03-05 08:00:13	[INFO]:	12002: start transport layer gateway server thread! url: http://0.0.0.0:8086[39m
+[32m2025-03-05 08:00:13	[INFO]:	12002: start transport layer sendReqToTargetRelay thread![39m
+[32m2025-03-05 08:00:13	[INFO]:	12002: start transport layer sendRespToSourceRelay thread![39m
+[32m2025-03-05 08:00:13	[INFO]:	12002: start transport layer sendReqToTargetChain thread![39m
+[32m2025-03-05 08:00:13	[INFO]:	12002: start transport layer sendRespToSourceChain thread![39m
+[32m2025-03-05 08:00:13	[INFO]:	12002: start transport layer dealReqTxHashes thread![39m
+[32m2025-03-05 08:00:13	[INFO]:	12002: start transport layer dealRespTxHashes thread![39m
+[32m2025-03-05 08:00:14	[INFO]:	Chain ID - 12002 : relayer_transport started successfully.[39m
+[32m2025-03-05 08:00:14	[INFO]:	Notary update: XXX[39m
+[32m2025-03-05 08:01:52	[INFO]:	SPV update: XXX[39m
+05 16:00:16] INFO: 日志文件: /root/CIPS-Gemini-Ethereum/logs/eth.log
+[2025-03-05 16:00:16] INFO: 监控进程已启动 (PID: 926921)

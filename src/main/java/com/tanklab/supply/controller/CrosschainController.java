@@ -3,6 +3,8 @@ package com.tanklab.supply.controller;
 import com.tanklab.supply.ds.req.ChainMakerReq;
 import com.tanklab.supply.ds.req.CrossReq;
 import com.tanklab.supply.ds.req.StartGatewaysReq;
+import com.tanklab.supply.ds.req.CrossChainReq;
+import com.tanklab.supply.ds.req.FullCrossChainReq;
 import com.tanklab.supply.ds.resp.CommonResp;
 import com.tanklab.supply.service.CrosschainService;
 import io.swagger.annotations.ApiModel;
@@ -52,6 +54,29 @@ public class CrosschainController {
     @PostMapping("/startGateways")
     public CommonResp startGateways(@RequestBody StartGatewaysReq req) {
         return crosschainService.startGateways(
+            req.getSrcIp(),
+            req.getSrcChainType(),
+            req.getDstIp(),
+            req.getDstChainType(),
+            req.getRelayIp()
+        );
+    }
+
+    @ApiOperation("执行跨链操作")
+    @PostMapping("/execute")
+    public CommonResp executeCrossChain(@RequestBody CrossChainReq req) {
+        return crosschainService.executeCrossChain(
+            req.getSrcIp(),
+            req.getSrcChainType(),
+            req.getDstIp(),
+            req.getDstChainType()
+        );
+    }
+
+    @ApiOperation("执行完整的跨链操作(包含启动网关)")
+    @PostMapping("/execute/full")
+    public CommonResp executeFullCrossChain(@RequestBody FullCrossChainReq req) {
+        return crosschainService.executeFullCrossChain(
             req.getSrcIp(),
             req.getSrcChainType(),
             req.getDstIp(),

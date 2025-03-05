@@ -1,10 +1,14 @@
 #!/bin/bash
 
+# 0. 加载环境变量
+source /etc/profile
+source ~/.bashrc
+
 # 1. 检查是否传入了参数
 if [ $# -ne 3 ]; then
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: 参数数量不正确" >> /root/shell/chainmaker_debug.log
-    echo "Usage: $0 <chain_id> <ip> <port>" >> /root/shell/chainmaker_debug.log
-    echo "Received parameters: $@" >> /root/shell/chainmaker_debug.log
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: 参数数量不正确"
+    echo "Usage: $0 <chain_id> <ip> <port>"
+    echo "Received parameters: $@"
     exit 1
 fi
 
@@ -13,101 +17,185 @@ CHAIN_ID=$1
 IP=$2
 PORT=$3
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: 接收到的参数：CHAIN_ID=$CHAIN_ID, IP=$IP, PORT=$PORT" >> /root/shell/chainmaker_debug.log
-
 # 3. 定义变量
 REPO_DIR=/root/CIPS-Gemini-ChainMaker
 TARGET_FILE="$REPO_DIR/relayer/tests/test_transport.go"
 NEW_URL="http://$IP:$PORT"
 LOG_DIR="$REPO_DIR/logs"
-CURRENT_TIME=$(date +"%Y%m%d_%H%M%S")
-LOG_FILE="$LOG_DIR/chainmaker_$CURRENT_TIME.log"
+LOG_FILE="$LOG_DIR/chainmaker.log"
+GATEWAY_PID_FILE="/tmp/chainmaker_gateway.pid"
+MONITOR_PID_FILE="/tmp/chainmaker_monitor.pid"
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: 环境变量：" >> /root/shell/chainmaker_debug.log
-echo "REPO_DIR=$REPO_DIR" >> /root/shell/chainmaker_debug.log
-echo "TARGET_FILE=$TARGET_FILE" >> /root/shell/chainmaker_debug.log
-echo "NEW_URL=$NEW_URL" >> /root/shell/chainmaker_debug.log
-echo "PATH=$PATH" >> /root/shell/chainmaker_debug.log
-echo "GOPATH=$GOPATH" >> /root/shell/chainmaker_debug.log
-echo "GOROOT=$GOROOT" >> /root/shell/chainmaker_debug.log
+# 4. 定义日志函数
+log_info() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: $1" >> "$LOG_FILE"
+}
 
-# 4. 创建日志目录
+log_error() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $1" >> "$LOG_FILE"
+}
+
+log_success() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] SUCCESS: $1" >> "$LOG_FILE"
+}
+
+# 5. 清理旧进程和日志
+cleanup() {
+    # 清理旧进程
+    if [ -f "$GATEWAY_PID_FILE" ]; then
+        OLD_PID=$(cat "$GATEWAY_PID_FILE")
+        if ps -p $OLD_PID > /dev/null; then
+            log_info "发现旧的网关进程 (PID: $OLD_PID)，正在终止..."
+            kill $OLD_PID
+            sleep 2
+        fi
+    fi
+    
+    if [ -f "$MONITOR_PID_FILE" ]; then
+        OLD_MONITOR_PID=$(cat "$MONITOR_PID_FILE")
+        if ps -p $OLD_MONITOR_PID > /dev/null; then
+            log_info "发现旧的监控进程 (PID: $OLD_MONITOR_PID)，正在终止..."
+            kill $OLD_MONITOR_PID
+            sleep 2
+        fi
+    fi
+
+    # 清理旧日志
+    log_info "清理旧日志文件..."
+    if [ -d "$LOG_DIR" ]; then
+        # 如果旧日志存在，将其重命名为备份
+        if [ -f "$LOG_FILE" ]; then
+            mv "$LOG_FILE" "${LOG_FILE}.$(date +"%Y%m%d_%H%M%S").bak"
+        fi
+        # 创建新的空日志文件
+        touch "$LOG_FILE"
+        chmod 666 "$LOG_FILE"
+    fi
+}
+
+# 6. 记录环境信息
+log_info "环境变量："
+log_info "REPO_DIR=$REPO_DIR"
+log_info "TARGET_FILE=$TARGET_FILE"
+log_info "NEW_URL=$NEW_URL"
+log_info "PATH=$PATH"
+log_info "GOPATH=$GOPATH"
+log_info "GOROOT=$GOROOT"
+
+# 7. 创建日志目录
 mkdir -p "$LOG_DIR"
 if [ $? -ne 0 ]; then
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: 创建日志目录失败" >> /root/shell/chainmaker_debug.log
+    log_error "创建日志目录失败"
     exit 1
 fi
 
-# 5. 进入指定目录
+# 8. 进入指定目录
 cd "$REPO_DIR"
 if [ $? -ne 0 ]; then
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: 进入目录 $REPO_DIR 失败" >> /root/shell/chainmaker_debug.log
-    echo "当前目录: $(pwd)" >> /root/shell/chainmaker_debug.log
+    log_error "进入目录 $REPO_DIR 失败"
+    log_error "当前目录: $(pwd)"
     exit 1
 fi
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: 当前工作目录: $(pwd)" >> /root/shell/chainmaker_debug.log
+log_info "当前工作目录: $(pwd)"
 
-# 6. 备份原文件
+# 9. 备份原文件
 cp "$TARGET_FILE" "${TARGET_FILE}.bak"
 if [ $? -ne 0 ]; then
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: 备份文件失败" >> /root/shell/chainmaker_debug.log
+    log_error "备份文件失败"
     exit 1
 fi
 
-# 7. 使用sed命令精确替换指定行
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: 开始更新配置文件" >> /root/shell/chainmaker_debug.log
+# 10. 更新配置文件
+log_info "开始更新配置文件"
 
-# 替换第25行的 TARGET_CHAIN_ID
+# 替换配置
 sed -i "25s/TARGET_CHAIN_ID int64 = [0-9]*/TARGET_CHAIN_ID int64 = $CHAIN_ID/" "$TARGET_FILE"
 if [ $? -ne 0 ]; then
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: 更新 CHAIN_ID 失败" >> /root/shell/chainmaker_debug.log
+    log_error "更新 CHAIN_ID 失败"
     mv "${TARGET_FILE}.bak" "$TARGET_FILE"
     exit 1
 fi
 
-# 替换第32行的 TARGET_SERVER_URL
 sed -i '32s|"http://[^"]*"|"'"$NEW_URL"'"|' "$TARGET_FILE"
 if [ $? -ne 0 ]; then
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: 更新 URL 失败" >> /root/shell/chainmaker_debug.log
+    log_error "更新 URL 失败"
     mv "${TARGET_FILE}.bak" "$TARGET_FILE"
     exit 1
 fi
 
-# 8. 检查替换是否成功
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: 更新后的配置内容：" >> /root/shell/chainmaker_debug.log
-sed -n '25p;32p' "$TARGET_FILE" >> /root/shell/chainmaker_debug.log
+# 11. 检查配置更新
+log_info "更新后的配置内容："
+sed -n '25p;32p' "$TARGET_FILE" >> "$LOG_FILE"
 
-# 9. 启动长安链网关并记录日志
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: 开始启动长安链网关..." >> /root/shell/chainmaker_debug.log
+# 12. 清理旧进程和日志
+cleanup
 
-# 检查 Go 环境
-which go >> /root/shell/chainmaker_debug.log 2>&1
-go version >> /root/shell/chainmaker_debug.log 2>&1
+# 13. 启动长安链网关
+log_info "开始启动长安链网关..."
 
+# 检查环境
+which go > "$LOG_FILE" 2>&1
+go version >> "$LOG_FILE" 2>&1
+
+# 启动网关并直接写入日志
 nohup go run main.go source > "$LOG_FILE" 2>&1 &
 CHAINMAKER_PID=$!
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: 启动进程 PID: $CHAINMAKER_PID" >> /root/shell/chainmaker_debug.log
+# 保存PID
+echo $CHAINMAKER_PID > "$GATEWAY_PID_FILE"
+log_info "网关进程已启动 (PID: $CHAINMAKER_PID)"
 
-# 10. 等待网关启动
+# 14. 等待网关启动
 sleep 5
 
-# 11. 检查网关是否成功启动
+# 15. 检查网关是否成功启动
 if ! ps -p $CHAINMAKER_PID > /dev/null; then
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: 长安链网关启动失败" >> /root/shell/chainmaker_debug.log
-    echo "查看启动日志：" >> /root/shell/chainmaker_debug.log
-    tail -n 50 "$LOG_FILE" >> /root/shell/chainmaker_debug.log
+    log_error "长安链网关启动失败"
+    log_error "完整启动日志："
+    cat "$LOG_FILE"
     mv "${TARGET_FILE}.bak" "$TARGET_FILE"
     exit 1
 fi
 
-# 12. 删除备份文件
+# 16. 启动监控进程（在后台运行）
+(
+    # 监控进程的清理函数
+    cleanup_monitor() {
+        log_info "监控进程正在退出..."
+        rm -f "$MONITOR_PID_FILE"
+        exit 0
+    }
+
+    # 注册信号处理
+    trap cleanup_monitor SIGINT SIGTERM
+
+    # 记录监控进程PID
+    echo $$ > "$MONITOR_PID_FILE"
+    
+    # 进程状态监控循环
+    while true; do
+        if ! ps -p $CHAINMAKER_PID > /dev/null; then
+            log_error "网关进程已终止！"
+            exit 1
+        fi
+        sleep 60
+    done
+) &
+
+MONITOR_PID=$!
+log_info "监控进程已启动 (PID: $MONITOR_PID)"
+
+# 17. 删除备份文件
 rm -f "${TARGET_FILE}.bak"
 
-# 13. 输出启动信息
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] SUCCESS: 长安链网关已启动" >> /root/shell/chainmaker_debug.log
-echo "PID: $CHAINMAKER_PID" >> /root/shell/chainmaker_debug.log
-echo "LOG: $LOG_FILE" >> /root/shell/chainmaker_debug.log
-echo "CHAIN_ID: $CHAIN_ID" >> /root/shell/chainmaker_debug.log
-echo "TARGET_URL: $NEW_URL" >> /root/shell/chainmaker_debug.log
+# 18. 输出最终启动信息
+log_success "长安链网关已成功启动"
+log_info "网关进程 PID: $CHAINMAKER_PID"
+log_info "监控进程 PID: $MONITOR_PID"
+log_info "日志文件: $LOG_FILE"
+log_info "链ID: $CHAIN_ID"
+log_info "目标URL: $NEW_URL"
+
+# 主进程退出
+exit 0 

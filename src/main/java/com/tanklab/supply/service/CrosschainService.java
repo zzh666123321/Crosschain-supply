@@ -34,4 +34,25 @@ public interface CrosschainService extends IService<Crosschain> {
      * @return 启动结果
      */
     CommonResp startGateways(String srcIp, String srcChainType, String dstIp, String dstChainType, String relayIp);
+
+    /**
+     * 执行跨链操作
+     * @param srcIp 源链服务器IP
+     * @param srcChainType 源链类型 (ethereum/chainmaker/h2chain)
+     * @param dstIp 目标链服务器IP
+     * @param dstChainType 目标链类型 (ethereum/chainmaker/h2chain)
+     * @return 跨链操作结果
+     */
+    CommonResp executeCrossChain(String srcIp, String srcChainType, String dstIp, String dstChainType);
+
+    /**
+     * 执行完整的跨链操作（包括启动网关和执行跨链）
+     * @param srcIp 源链服务器IP
+     * @param srcChainType 源链类型 (ethereum/chainmaker/h2chain)
+     * @param dstIp 目标链服务器IP
+     * @param dstChainType 目标链类型 (ethereum/chainmaker/h2chain)
+     * @param relayIp 中继链服务器IP
+     * @return 跨链操作结果
+     */
+    CommonResp executeFullCrossChain(String srcIp, String srcChainType, String dstIp, String dstChainType, String relayIp);
 }

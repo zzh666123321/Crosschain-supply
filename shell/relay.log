@@ -1,1 +1,289 @@
-nohup: failed to run command './relay_start.sh': No such file or directory
+[32m2025-03-05 07:25:29	[INFO]:	Start relayer...[39m
+[32m2025-03-05 07:25:29	[INFO]:	relay chain: prepare relayer...[39m
+[34m2025-03-05 07:25:29	[DEBG]:	chainsdk init success[39m
+[32m2025-03-05 07:25:29	[INFO]:	relay chain: init aggregator...[39m
+[36m2025-03-05 07:25:29	[OK]:	relay chain init aggregator success[39m
+[32m2025-03-05 07:25:29	[INFO]:	relay chain: make config...[39m
+[36m2025-03-05 07:25:29	[OK]:	relay chain: make config success[39m
+[36m2025-03-05 07:25:29	[OK]:	relay chain: prepare relayer success[39m
+[32m2025-03-05 07:25:29	[INFO]:	relay chain: relayer start...[39m
+[34m2025-03-05 07:25:29	[DEBG]:	30000: start verification protocol: 1[39m
+[34m2025-03-05 07:25:29	[DEBG]:	30000: start verification protocol: 2[39m
+[34m2025-03-05 07:25:29	[DEBG]:	30000: start verification layer watch_q_req_tspt_vrfy thread![39m
+[34m2025-03-05 07:25:29	[DEBG]:	30000: start verification layer watch_q_req_pre_tspt_vrfy thread![39m
+[34m2025-03-05 07:25:29	[DEBG]:	30000: start verification layer watch_q_resp_tspt_vrfy thread![39m
+[34m2025-03-05 07:25:29	[DEBG]:	30000: start verification layer watch_q_resp_pre_tspt_vrfy thread![39m
+[32m2025-03-05 07:25:29	[INFO]:	SPV update: XXX[39m
+[32m2025-03-05 07:25:29	[INFO]:	Notary update: XXX[39m
+[36m2025-03-05 07:25:30	[OK]:	relay chain: verification layer start success[39m
+[34m2025-03-05 07:25:30	[DEBG]:	30000: start transport layer watch thread![39m
+[34m2025-03-05 07:25:30	[DEBG]:	30000: start transport layer gateway server thread![39m
+[34m2025-03-05 07:25:30	[DEBG]:	30000: start transport layer sendReqToTargetRelay thread![39m
+[34m2025-03-05 07:25:30	[DEBG]:	30000: start transport layer sendRespToSourceRelay thread![39m
+[34m2025-03-05 07:25:30	[DEBG]:	30000: start transport layer sendReqToTargetChain thread![39m
+[34m2025-03-05 07:25:30	[DEBG]:	30000: start transport layer sendRespToSourceChain thread![39m
+[34m2025-03-05 07:25:30	[DEBG]:	30000: start transport layer dealReqTxHashes thread![39m
+[34m2025-03-05 07:25:30	[DEBG]:	30000: start transport layer dealRespTxHashes thread![39m
+[36m2025-03-05 07:25:31	[OK]:	relay chain: transport layer start success[39m
+[36m2025-03-05 07:25:31	[OK]:	relay chain: relayer start success
+[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler get request from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: ReceivceReqCmFromOthers: send item to q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler response successfully, from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler get request from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: ReceivceReqCmFromOthers: send item to q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler get request from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: ReceivceReqCmFromOthers: send item to q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: get cm with proof from q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: send cm with proof to q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler get request from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler response successfully, from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: ReceivceReqCmFromOthers: send item to q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: get cm with proof from q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: get cm with proof from q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler get request from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: ReceivceReqCmFromOthers: send item to q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler get request from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: ReceivceReqCmFromOthers: send item to q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] send to chain with ccMsg: {SrcChainId:+12002 DstChainId:+13119 Seq:+5 SrcAppId:+1 DstAppId:+1 PayloadReq:[] PayloadResp:[] TransactionTypeId:+1 TransactionPayload:[] VerificationTypeId:+1 VerificationPayload:[] TransmissionTypeId:+1 TransmissionPayload:[] TransportTypeId:+1 TransportPayload:[] HashReq:[] HashResp:[] Ack:false}[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler get request from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: ReceivceReqCmFromOthers: send item to q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler get request from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: ReceivceReqCmFromOthers: send item to q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler get request from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: ReceivceReqCmFromOthers: send item to q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler get request from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: ReceivceReqCmFromOthers: send item to q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler get request from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: ReceivceReqCmFromOthers: send item to q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler get request from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: ReceivceReqCmFromOthers: send item to q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler get request from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: ReceivceReqCmFromOthers: send item to q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] got resp from aggr: contract_result:<result:"success" message:"Success" gas_used:516 contract_event:<topic:"SEND" tx_id:"1829d76604f67c0dcaafbde1a774544d7acfd3f94be547868af35081466fdfa6" contract_name:"event_listen" event_data:"075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913" > > tx_id:"1829d76604f67c0dcaafbde1a774544d7acfd3f94be547868af35081466fdfa6" tx_timestamp:1741159564 tx_block_height:8633 [39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: call chain with result txhash:1829d76604f67c0dcaafbde1a774544d7acfd3f94be547868af35081466fdfa6[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: send txhash to q_req_txhashes[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: get cm with proof from q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: DealReqTxHashes: get txhash from q_req_txhashes[39m
+get req txhash: 1829d76604f67c0dcaafbde1a774544d7acfd3f94be547868af35081466fdfa6
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] send to chain with ccMsg: {SrcChainId:+12002 DstChainId:+13119 Seq:+5 SrcAppId:+1 DstAppId:+1 PayloadReq:[] PayloadResp:[] TransactionTypeId:+1 TransactionPayload:[] VerificationTypeId:+1 VerificationPayload:[] TransmissionTypeId:+1 TransmissionPayload:[] TransportTypeId:+1 TransportPayload:[] HashReq:[] HashResp:[] Ack:false}[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: send cm with proof to q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: get cm with proof from q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler response successfully, from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] got resp from aggr: contract_result:<result:"success" message:"Success" gas_used:516 contract_event:<topic:"SEND" tx_id:"1829d7660a7d24c3caf63ea5e553ed25126e45a9eeec41cba122fb5ed17a2ffa" contract_name:"event_listen" event_data:"075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913" > > tx_id:"1829d7660a7d24c3caf63ea5e553ed25126e45a9eeec41cba122fb5ed17a2ffa" tx_timestamp:1741159564 tx_block_height:8634 [39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: call chain with result txhash:1829d7660a7d24c3caf63ea5e553ed25126e45a9eeec41cba122fb5ed17a2ffa[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: send txhash to q_req_txhashes[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: get cm with proof from q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] send to chain with ccMsg: {SrcChainId:+12002 DstChainId:+13119 Seq:+5 SrcAppId:+1 DstAppId:+1 PayloadReq:[] PayloadResp:[] TransactionTypeId:+1 TransactionPayload:[] VerificationTypeId:+1 VerificationPayload:[] TransmissionTypeId:+1 TransmissionPayload:[] TransportTypeId:+1 TransportPayload:[] HashReq:[] HashResp:[] Ack:false}[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: send cm with proof to q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: get cm with proof from q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler response successfully, from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: DealReqTxHashes: get txhash from q_req_txhashes[39m
+get req txhash: 1829d7660a7d24c3caf63ea5e553ed25126e45a9eeec41cba122fb5ed17a2ffa
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] got resp from aggr: contract_result:<result:"success" message:"Success" gas_used:516 contract_event:<topic:"SEND" tx_id:"1829d7660d81e5a2cac586ce108881343d2e1d2d00cf431fbe149cc3aacb22c5" contract_name:"event_listen" event_data:"075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913" > > tx_id:"1829d7660d81e5a2cac586ce108881343d2e1d2d00cf431fbe149cc3aacb22c5" tx_timestamp:1741159564 tx_block_height:8635 [39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: call chain with result txhash:1829d7660d81e5a2cac586ce108881343d2e1d2d00cf431fbe149cc3aacb22c5[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: send txhash to q_req_txhashes[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: get cm with proof from q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: DealReqTxHashes: get txhash from q_req_txhashes[39m
+get req txhash: 1829d7660d81e5a2cac586ce108881343d2e1d2d00cf431fbe149cc3aacb22c5
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] send to chain with ccMsg: {SrcChainId:+12002 DstChainId:+13119 Seq:+5 SrcAppId:+1 DstAppId:+1 PayloadReq:[] PayloadResp:[] TransactionTypeId:+1 TransactionPayload:[] VerificationTypeId:+1 VerificationPayload:[] TransmissionTypeId:+1 TransmissionPayload:[] TransportTypeId:+1 TransportPayload:[] HashReq:[] HashResp:[] Ack:false}[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: send cm with proof to q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: get cm with proof from q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler response successfully, from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] got resp from aggr: contract_result:<result:"success" message:"Success" gas_used:516 contract_event:<topic:"SEND" tx_id:"1829d76610af26ecca0ba80752def69551aceb70d1174d10b976e91c2d04389e" contract_name:"event_listen" event_data:"075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913" > > tx_id:"1829d76610af26ecca0ba80752def69551aceb70d1174d10b976e91c2d04389e" tx_timestamp:1741159564 tx_block_height:8636 [39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: call chain with result txhash:1829d76610af26ecca0ba80752def69551aceb70d1174d10b976e91c2d04389e[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: send txhash to q_req_txhashes[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: get cm with proof from q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: DealReqTxHashes: get txhash from q_req_txhashes[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] send to chain with ccMsg: {SrcChainId:+12002 DstChainId:+13119 Seq:+5 SrcAppId:+1 DstAppId:+1 PayloadReq:[] PayloadResp:[] TransactionTypeId:+1 TransactionPayload:[] VerificationTypeId:+1 VerificationPayload:[] TransmissionTypeId:+1 TransmissionPayload:[] TransportTypeId:+1 TransportPayload:[] HashReq:[] HashResp:[] Ack:false}[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: send cm with proof to q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: get cm with proof from q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler response successfully, from /cm/req[39m
+get req txhash: 1829d76610af26ecca0ba80752def69551aceb70d1174d10b976e91c2d04389e
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] got resp from aggr: contract_result:<result:"success" message:"Success" gas_used:516 contract_event:<topic:"SEND" tx_id:"1829d76613754d81cad545f2dce02339e2ea2a977fed4067bc189ca0538db8bc" contract_name:"event_listen" event_data:"075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913" > > tx_id:"1829d76613754d81cad545f2dce02339e2ea2a977fed4067bc189ca0538db8bc" tx_timestamp:1741159564 tx_block_height:8637 [39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: call chain with result txhash:1829d76613754d81cad545f2dce02339e2ea2a977fed4067bc189ca0538db8bc[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: send txhash to q_req_txhashes[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: get cm with proof from q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: DealReqTxHashes: get txhash from q_req_txhashes[39m
+get req txhash: 1829d76613754d81cad545f2dce02339e2ea2a977fed4067bc189ca0538db8bc
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] send to chain with ccMsg: {SrcChainId:+12002 DstChainId:+13119 Seq:+5 SrcAppId:+1 DstAppId:+1 PayloadReq:[] PayloadResp:[] TransactionTypeId:+1 TransactionPayload:[] VerificationTypeId:+1 VerificationPayload:[] TransmissionTypeId:+1 TransmissionPayload:[] TransportTypeId:+1 TransportPayload:[] HashReq:[] HashResp:[] Ack:false}[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: send cm with proof to q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: get cm with proof from q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler response successfully, from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] got resp from aggr: contract_result:<result:"success" message:"Success" gas_used:516 contract_event:<topic:"SEND" tx_id:"1829d766167a0361caf43cf143a21653b4b608fd15284455bd46af3cec07c00a" contract_name:"event_listen" event_data:"075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913" > > tx_id:"1829d766167a0361caf43cf143a21653b4b608fd15284455bd46af3cec07c00a" tx_timestamp:1741159564 tx_block_height:8638 [39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: call chain with result txhash:1829d766167a0361caf43cf143a21653b4b608fd15284455bd46af3cec07c00a[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: send txhash to q_req_txhashes[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: get cm with proof from q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] send to chain with ccMsg: {SrcChainId:+12002 DstChainId:+13119 Seq:+5 SrcAppId:+1 DstAppId:+1 PayloadReq:[] PayloadResp:[] TransactionTypeId:+1 TransactionPayload:[] VerificationTypeId:+1 VerificationPayload:[] TransmissionTypeId:+1 TransmissionPayload:[] TransportTypeId:+1 TransportPayload:[] HashReq:[] HashResp:[] Ack:false}[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: send cm with proof to q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: get cm with proof from q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler response successfully, from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: DealReqTxHashes: get txhash from q_req_txhashes[39m
+get req txhash: 1829d766167a0361caf43cf143a21653b4b608fd15284455bd46af3cec07c00a
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] got resp from aggr: contract_result:<result:"success" message:"Success" gas_used:516 contract_event:<topic:"SEND" tx_id:"1829d766193ddd39cac9e6e910fdcce58963ed1bc16a4dff97d375b36ce4dce4" contract_name:"event_listen" event_data:"075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913" > > tx_id:"1829d766193ddd39cac9e6e910fdcce58963ed1bc16a4dff97d375b36ce4dce4" tx_timestamp:1741159564 tx_block_height:8639 [39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: call chain with result txhash:1829d766193ddd39cac9e6e910fdcce58963ed1bc16a4dff97d375b36ce4dce4[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: send txhash to q_req_txhashes[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: get cm with proof from q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] send to chain with ccMsg: {SrcChainId:+12002 DstChainId:+13119 Seq:+5 SrcAppId:+1 DstAppId:+1 PayloadReq:[] PayloadResp:[] TransactionTypeId:+1 TransactionPayload:[] VerificationTypeId:+1 VerificationPayload:[] TransmissionTypeId:+1 TransmissionPayload:[] TransportTypeId:+1 TransportPayload:[] HashReq:[] HashResp:[] Ack:false}[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: send cm with proof to q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: get cm with proof from q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler response successfully, from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: DealReqTxHashes: get txhash from q_req_txhashes[39m
+get req txhash: 1829d766193ddd39cac9e6e910fdcce58963ed1bc16a4dff97d375b36ce4dce4
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] got resp from aggr: contract_result:<result:"success" message:"Success" gas_used:516 contract_event:<topic:"SEND" tx_id:"1829d7661cdd89cfca304c041d2bc5bfd47e46b9b60844609d5a39e2862d0ff0" contract_name:"event_listen" event_data:"075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913" > > tx_id:"1829d7661cdd89cfca304c041d2bc5bfd47e46b9b60844609d5a39e2862d0ff0" tx_timestamp:1741159564 tx_block_height:8640 [39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: call chain with result txhash:1829d7661cdd89cfca304c041d2bc5bfd47e46b9b60844609d5a39e2862d0ff0[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: send txhash to q_req_txhashes[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: get cm with proof from q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] send to chain with ccMsg: {SrcChainId:+12002 DstChainId:+13119 Seq:+5 SrcAppId:+1 DstAppId:+1 PayloadReq:[] PayloadResp:[] TransactionTypeId:+1 TransactionPayload:[] VerificationTypeId:+1 VerificationPayload:[] TransmissionTypeId:+1 TransmissionPayload:[] TransportTypeId:+1 TransportPayload:[] HashReq:[] HashResp:[] Ack:false}[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: send cm with proof to q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: get cm with proof from q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler response successfully, from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: DealReqTxHashes: get txhash from q_req_txhashes[39m
+get req txhash: 1829d7661cdd89cfca304c041d2bc5bfd47e46b9b60844609d5a39e2862d0ff0
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] got resp from aggr: contract_result:<result:"success" message:"Success" gas_used:516 contract_event:<topic:"SEND" tx_id:"1829d7661fb9c1afcad0f81f85057e783c911fa874814a82afe153ad7f7c8960" contract_name:"event_listen" event_data:"075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913" > > tx_id:"1829d7661fb9c1afcad0f81f85057e783c911fa874814a82afe153ad7f7c8960" tx_timestamp:1741159564 tx_block_height:8641 [39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: call chain with result txhash:1829d7661fb9c1afcad0f81f85057e783c911fa874814a82afe153ad7f7c8960[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: send txhash to q_req_txhashes[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: get cm with proof from q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: DealReqTxHashes: get txhash from q_req_txhashes[39m
+get req txhash: 1829d7661fb9c1afcad0f81f85057e783c911fa874814a82afe153ad7f7c8960
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] send to chain with ccMsg: {SrcChainId:+12002 DstChainId:+13119 Seq:+5 SrcAppId:+1 DstAppId:+1 PayloadReq:[] PayloadResp:[] TransactionTypeId:+1 TransactionPayload:[] VerificationTypeId:+1 VerificationPayload:[] TransmissionTypeId:+1 TransmissionPayload:[] TransportTypeId:+1 TransportPayload:[] HashReq:[] HashResp:[] Ack:false}[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: send cm with proof to q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: get cm with proof from q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler response successfully, from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] got resp from aggr: contract_result:<result:"success" message:"Success" gas_used:516 contract_event:<topic:"SEND" tx_id:"1829d766229fd51ecabdc664a0019ad14bd11f44843949cca9d8eef25ea9c7be" contract_name:"event_listen" event_data:"075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913" > > tx_id:"1829d766229fd51ecabdc664a0019ad14bd11f44843949cca9d8eef25ea9c7be" tx_timestamp:1741159564 tx_block_height:8642 [39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: call chain with result txhash:1829d766229fd51ecabdc664a0019ad14bd11f44843949cca9d8eef25ea9c7be[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: send txhash to q_req_txhashes[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: get cm with proof from q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] send to chain with ccMsg: {SrcChainId:+12002 DstChainId:+13119 Seq:+5 SrcAppId:+1 DstAppId:+1 PayloadReq:[] PayloadResp:[] TransactionTypeId:+1 TransactionPayload:[] VerificationTypeId:+1 VerificationPayload:[] TransmissionTypeId:+1 TransmissionPayload:[] TransportTypeId:+1 TransportPayload:[] HashReq:[] HashResp:[] Ack:false}[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: DealReqTxHashes: get txhash from q_req_txhashes[39m
+get req txhash: 1829d766229fd51ecabdc664a0019ad14bd11f44843949cca9d8eef25ea9c7be
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: send cm with proof to q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: get cm with proof from q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler response successfully, from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] got resp from aggr: contract_result:<result:"success" message:"Success" gas_used:516 contract_event:<topic:"SEND" tx_id:"1829d766256314facabc9bccee55822a709a4e0df9994d2d811e48c95778db01" contract_name:"event_listen" event_data:"075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913" > > tx_id:"1829d766256314facabc9bccee55822a709a4e0df9994d2d811e48c95778db01" tx_timestamp:1741159564 tx_block_height:8643 [39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: call chain with result txhash:1829d766256314facabc9bccee55822a709a4e0df9994d2d811e48c95778db01[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: send txhash to q_req_txhashes[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: get cm with proof from q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] send to chain with ccMsg: {SrcChainId:+12002 DstChainId:+13119 Seq:+5 SrcAppId:+1 DstAppId:+1 PayloadReq:[] PayloadResp:[] TransactionTypeId:+1 TransactionPayload:[] VerificationTypeId:+1 VerificationPayload:[] TransmissionTypeId:+1 TransmissionPayload:[] TransportTypeId:+1 TransportPayload:[] HashReq:[] HashResp:[] Ack:false}[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: send cm with proof to q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: get cm with proof from q_req_pre_tspt_vrfy[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: cmreq handler response successfully, from /cm/req[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: DealReqTxHashes: get txhash from q_req_txhashes[39m
+get req txhash: 1829d766256314facabc9bccee55822a709a4e0df9994d2d811e48c95778db01
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] got resp from aggr: contract_result:<result:"success" message:"Success" gas_used:516 contract_event:<topic:"SEND" tx_id:"1829d76628e04cf7ca339a7b1c56eab3f1e907a518be4432ae77c6184bc5d35a" contract_name:"event_listen" event_data:"075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913" > > tx_id:"1829d76628e04cf7ca339a7b1c56eab3f1e907a518be4432ae77c6184bc5d35a" tx_timestamp:1741159564 tx_block_height:8644 [39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: call chain with result txhash:1829d76628e04cf7ca339a7b1c56eab3f1e907a518be4432ae77c6184bc5d35a[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: send txhash to q_req_txhashes[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: get cm with proof from q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: DealReqTxHashes: get txhash from q_req_txhashes[39m
+get req txhash: 1829d76628e04cf7ca339a7b1c56eab3f1e907a518be4432ae77c6184bc5d35a
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] send to chain with ccMsg: {SrcChainId:+12002 DstChainId:+13119 Seq:+5 SrcAppId:+1 DstAppId:+1 PayloadReq:[] PayloadResp:[] TransactionTypeId:+1 TransactionPayload:[] VerificationTypeId:+1 VerificationPayload:[] TransmissionTypeId:+1 TransmissionPayload:[] TransportTypeId:+1 TransportPayload:[] HashReq:[] HashResp:[] Ack:false}[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: watch_q_req_pre_tspt_vrfy: send cm with proof to q_req_pre_vrfy_tspt[39m
+[34m2025-03-05 07:26:04	[DEBG]:	[SDK ReceiveMsg] got resp from aggr: contract_result:<result:"success" message:"Success" gas_used:516 contract_event:<topic:"SEND" tx_id:"1829d7662bfd71eacaf8add86e1d5601fe3e4173e8204de18b977a205b409211" contract_name:"event_listen" event_data:"075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913" > > tx_id:"1829d7662bfd71eacaf8add86e1d5601fe3e4173e8204de18b977a205b409211" tx_timestamp:1741159564 tx_block_height:8645 [39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: call chain with result txhash:1829d7662bfd71eacaf8add86e1d5601fe3e4173e8204de18b977a205b409211[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: SendReqToTargetChain: send txhash to q_req_txhashes[39m
+[34m2025-03-05 07:26:04	[DEBG]:	30000: DealReqTxHashes: get txhash from q_req_txhashes[39m
+get req txhash: 1829d7662bfd71eacaf8add86e1d5601fe3e4173e8204de18b977a205b409211
+Obtained request cmhash on the source chain(30000): 075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913
+[34m2025-03-05 07:26:05	[DEBG]:	30000: Watch: send cm to q_req_tspt_vrfy[39m
+[34m2025-03-05 07:26:05	[DEBG]:	30000: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
+[32m2025-03-05 07:26:05	[INFO]:	30000: generate proof for req cm(5): [112 114 111 111 102 32 111 102 32 83 80 86][39m
+[34m2025-03-05 07:26:05	[DEBG]:	30000: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
+[34m2025-03-05 07:26:05	[DEBG]:	30000: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
+cm.dstChainId(13119) not in gateway_clients
+cm.seq: 5
+Obtained request cmhash on the source chain(30000): 075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913
+[34m2025-03-05 07:26:07	[DEBG]:	30000: Watch: send cm to q_req_tspt_vrfy[39m
+[34m2025-03-05 07:26:07	[DEBG]:	30000: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
+[32m2025-03-05 07:26:07	[INFO]:	30000: generate proof for req cm(5): [112 114 111 111 102 32 111 102 32 83 80 86][39m
+[34m2025-03-05 07:26:07	[DEBG]:	30000: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
+[34m2025-03-05 07:26:07	[DEBG]:	30000: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
+cm.dstChainId(13119) not in gateway_clients
+cm.seq: 5
+Obtained request cmhash on the source chain(30000): 075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913
+[34m2025-03-05 07:26:09	[DEBG]:	30000: Watch: send cm to q_req_tspt_vrfy[39m
+[34m2025-03-05 07:26:09	[DEBG]:	30000: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
+[32m2025-03-05 07:26:09	[INFO]:	30000: generate proof for req cm(5): [112 114 111 111 102 32 111 102 32 83 80 86][39m
+[34m2025-03-05 07:26:09	[DEBG]:	30000: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
+[34m2025-03-05 07:26:09	[DEBG]:	30000: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
+cm.dstChainId(13119) not in gateway_clients
+cm.seq: 5
+Obtained request cmhash on the source chain(30000): 075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913
+[34m2025-03-05 07:26:10	[DEBG]:	30000: Watch: send cm to q_req_tspt_vrfy[39m
+[34m2025-03-05 07:26:10	[DEBG]:	30000: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
+[32m2025-03-05 07:26:10	[INFO]:	30000: generate proof for req cm(5): [112 114 111 111 102 32 111 102 32 83 80 86][39m
+[34m2025-03-05 07:26:10	[DEBG]:	30000: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
+[34m2025-03-05 07:26:10	[DEBG]:	30000: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
+cm.dstChainId(13119) not in gateway_clients
+cm.seq: 5
+Obtained request cmhash on the source chain(30000): 075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913
+[34m2025-03-05 07:26:12	[DEBG]:	30000: Watch: send cm to q_req_tspt_vrfy[39m
+[34m2025-03-05 07:26:12	[DEBG]:	30000: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
+[32m2025-03-05 07:26:12	[INFO]:	30000: generate proof for req cm(5): [112 114 111 111 102 32 111 102 32 83 80 86][39m
+[34m2025-03-05 07:26:12	[DEBG]:	30000: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
+[34m2025-03-05 07:26:12	[DEBG]:	30000: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
+cm.dstChainId(13119) not in gateway_clients
+cm.seq: 5
+Obtained request cmhash on the source chain(30000): 075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913
+[34m2025-03-05 07:26:14	[DEBG]:	30000: Watch: send cm to q_req_tspt_vrfy[39m
+[34m2025-03-05 07:26:14	[DEBG]:	30000: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
+[32m2025-03-05 07:26:14	[INFO]:	30000: generate proof for req cm(5): [112 114 111 111 102 32 111 102 32 83 80 86][39m
+[34m2025-03-05 07:26:14	[DEBG]:	30000: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
+[34m2025-03-05 07:26:14	[DEBG]:	30000: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
+cm.dstChainId(13119) not in gateway_clients
+cm.seq: 5
+Obtained request cmhash on the source chain(30000): 075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913
+[34m2025-03-05 07:26:16	[DEBG]:	30000: Watch: send cm to q_req_tspt_vrfy[39m
+[34m2025-03-05 07:26:16	[DEBG]:	30000: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
+[32m2025-03-05 07:26:16	[INFO]:	30000: generate proof for req cm(5): [112 114 111 111 102 32 111 102 32 83 80 86][39m
+[34m2025-03-05 07:26:16	[DEBG]:	30000: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
+[34m2025-03-05 07:26:16	[DEBG]:	30000: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
+cm.dstChainId(13119) not in gateway_clients
+cm.seq: 5
+Obtained request cmhash on the source chain(30000): 075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913
+[34m2025-03-05 07:26:17	[DEBG]:	30000: Watch: send cm to q_req_tspt_vrfy[39m
+[34m2025-03-05 07:26:17	[DEBG]:	30000: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
+[32m2025-03-05 07:26:17	[INFO]:	30000: generate proof for req cm(5): [112 114 111 111 102 32 111 102 32 83 80 86][39m
+[34m2025-03-05 07:26:17	[DEBG]:	30000: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
+[34m2025-03-05 07:26:17	[DEBG]:	30000: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
+cm.dstChainId(13119) not in gateway_clients
+cm.seq: 5
+Obtained request cmhash on the source chain(30000): 075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913
+[34m2025-03-05 07:26:19	[DEBG]:	30000: Watch: send cm to q_req_tspt_vrfy[39m
+[34m2025-03-05 07:26:19	[DEBG]:	30000: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
+[32m2025-03-05 07:26:19	[INFO]:	30000: generate proof for req cm(5): [112 114 111 111 102 32 111 102 32 83 80 86][39m
+[34m2025-03-05 07:26:19	[DEBG]:	30000: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
+[34m2025-03-05 07:26:19	[DEBG]:	30000: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
+cm.dstChainId(13119) not in gateway_clients
+cm.seq: 5
+Obtained request cmhash on the source chain(30000): 075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913
+[34m2025-03-05 07:26:21	[DEBG]:	30000: Watch: send cm to q_req_tspt_vrfy[39m
+[34m2025-03-05 07:26:21	[DEBG]:	30000: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
+[32m2025-03-05 07:26:21	[INFO]:	30000: generate proof for req cm(5): [112 114 111 111 102 32 111 102 32 83 80 86][39m
+[34m2025-03-05 07:26:21	[DEBG]:	30000: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
+[34m2025-03-05 07:26:21	[DEBG]:	30000: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
+cm.dstChainId(13119) not in gateway_clients
+cm.seq: 5
+Obtained request cmhash on the source chain(30000): 075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913
+[34m2025-03-05 07:26:22	[DEBG]:	30000: Watch: send cm to q_req_tspt_vrfy[39m
+[34m2025-03-05 07:26:22	[DEBG]:	30000: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
+[32m2025-03-05 07:26:22	[INFO]:	30000: generate proof for req cm(5): [112 114 111 111 102 32 111 102 32 83 80 86][39m
+[34m2025-03-05 07:26:22	[DEBG]:	30000: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
+[34m2025-03-05 07:26:22	[DEBG]:	30000: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
+cm.dstChainId(13119) not in gateway_clients
+cm.seq: 5
+Obtained request cmhash on the source chain(30000): 075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913
+[34m2025-03-05 07:26:24	[DEBG]:	30000: Watch: send cm to q_req_tspt_vrfy[39m
+[34m2025-03-05 07:26:24	[DEBG]:	30000: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
+[32m2025-03-05 07:26:24	[INFO]:	30000: generate proof for req cm(5): [112 114 111 111 102 32 111 102 32 83 80 86][39m
+[34m2025-03-05 07:26:24	[DEBG]:	30000: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
+[34m2025-03-05 07:26:24	[DEBG]:	30000: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
+cm.dstChainId(13119) not in gateway_clients
+cm.seq: 5
+Obtained request cmhash on the source chain(30000): 075dd059d452cecd5a2725eef511401040683d49ac1d4e029d928ad4a3667913
+[34m2025-03-05 07:26:26	[DEBG]:	30000: Watch: send cm to q_req_tspt_vrfy[39m
+[34m2025-03-05 07:26:26	[DEBG]:	30000: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
+[32m2025-03-05 07:26:26	[INFO]:	30000: generate proof for req cm(5): [112 114 111 111 102 32 111 102 32 83 80 86][39m
+[34m2025-03-05 07:26:26	[DEBG]:	30000: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
+[34m2025-03-05 07:26:26	[DEBG]:	30000: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
+cm.dstChainId(13119) not in gateway_clients
+cm.seq: 5
