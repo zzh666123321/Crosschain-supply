@@ -380,7 +380,7 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 
             case "h2chain":
                 //for test
-                String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(srcChainType, srcIp));
+                String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(dstChainType, dstIp));
                 // String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(dstChainType, dstIp));
                 String h2cResult = SSHConfig.executeCMD(h2cCmd, "UTF-8");
                 resultObj.put("h2chainStartResult_" + srcIp, "海河链网关启动成功");
@@ -419,7 +419,7 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
             case "h2chain":
                 // String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(srcChainType, srcIp));
                 //for test
-                String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(srcChainType, srcIp));
+                String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(dstChainType, dstIp));
                 String h2cResult = SSHConfig.executeCMD(h2cCmd, "UTF-8");
                 resultObj.put("h2chainStartResult_" + dstIp, "海河链网关启动成功");
                 resultObj.put("h2chainStartLog_" + dstIp, h2cResult);
@@ -573,7 +573,7 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                     String h2cResult = SSHConfig.executeCMD(h2cCmd, "UTF-8");
                     
                     // 等待5秒，确保日志已经生成
-                    Thread.sleep(35000);
+                    Thread.sleep(50000);
                     
                     // 读取海河链日志文件
                     String h2cSrcLogCmd = "cat /root/CIPS-Gemini-H2Chain/logs/h2chain.log";
