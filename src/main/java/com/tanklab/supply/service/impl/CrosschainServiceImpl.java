@@ -383,7 +383,7 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 
             case "h2chain":
                 //for test
-                String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(dstChainType, dstIp));
+                String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", 11002);
                 // String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(dstChainType, dstIp));
                 String h2cResult = SSHConfig.executeCMD(h2cCmd, "UTF-8");
                 resultObj.put("h2chainStartResult_" + srcIp, "海河链网关启动成功");
@@ -424,7 +424,7 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
             case "h2chain":
                 // String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(srcChainType, srcIp));
                 //for test
-                String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(dstChainType, dstIp));
+                String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", 11002);
                 String h2cResult = SSHConfig.executeCMD(h2cCmd, "UTF-8");
                 resultObj.put("h2chainStartResult_" + dstIp, "海河链网关启动成功");
                 resultObj.put("h2chainStartLog_" + dstIp, h2cResult);
@@ -518,7 +518,7 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                     // 执行以太坊跨链命令
                     String ethCmd = String.format(
                             "source /etc/profile && source ~/.bashrc && cd ~/CIPS-Gemini-Ethereum && ./helper.sh SendCCMsg ws://127.0.0.1:10026 contract_addresses_%d.toml %d 1 1",
-                            srcChainId, dstChainId);
+                            srcChainId, 11002);
                     String ethResult = SSHConfig.executeCMD(ethCmd, "UTF-8");
 
                     // 打印命令输出用于调试
@@ -541,45 +541,76 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                         System.out.println("1. 输出格式不匹配");
                         System.out.println("2. 正则表达式不正确");
                         System.out.println("使用的正则表达式: " + ethReqPattern);
-                        // 打印实际的输出内容，帮助调试
                         System.out.println("实际输出内容：");
                         System.out.println(ethResult);
                     }
 
-                    // 等待15秒，确保日志已经生成
+                    // 等待50秒，确保日志已经生成
                     Thread.sleep(50000);
 
                     // 读取以太坊日志文件
-                    String ethToH2cLogCmd = "cat /root/CIPS-Gemini-Ethereum/logs/eth.log";
-                    String ethToH2cLogs = SSHConfig.executeCMD(ethToH2cLogCmd, "UTF-8");
+                    String ethFromCmLogCmd = "cat /root/CIPS-Gemini-Ethereum/logs/eth.log";
+                    String ethFromCmLogs = SSHConfig.executeCMD(ethFromCmLogCmd, "UTF-8");
 
-                    // 连接目标链服务器并读取海河链日志
+                    // 连接目标链服务器
                     SSHConfig.connect(dstIp);
-                    String h2cFromEthLogCmd = "cat /root/CIPS-Gemini-H2Chain/logs/h2chain.log";
-                    String h2cFromEthLogs = SSHConfig.executeCMD(h2cFromEthLogCmd, "UTF-8");
 
-                    // 提取源链响应哈希
-                    String ethRespPattern = "get resp txhash: (0x[a-fA-F0-9]+)";
-                    Pattern ethRespRegex = Pattern.compile(ethRespPattern);
-                    Matcher ethRespMatcher = ethRespRegex.matcher(ethToH2cLogs);
-                    String ethRespHash = "";
-                    while (ethRespMatcher.find()) {
-                        ethRespHash = ethRespMatcher.group(1);
+                    if (dstChainType.equalsIgnoreCase("h2chain")) {
+                        // 读取海河链日志文件
+                        String h2cFromEthLogCmd = "cat /root/CIPS-Gemini-H2Chain/logs/h2chain.log";
+                        String h2cFromEthLogs = SSHConfig.executeCMD(h2cFromEthLogCmd, "UTF-8");
+
+                        // 提取源链响应哈希
+                        String ethRespPattern = "get resp txhash: (0x[a-fA-F0-9]+)";
+                        Pattern ethRespRegex = Pattern.compile(ethRespPattern);
+                        Matcher ethRespMatcher = ethRespRegex.matcher(ethFromCmLogs);
+                        String ethRespHash = "";
+                        while (ethRespMatcher.find()) {
+                            ethRespHash = ethRespMatcher.group(1);
+                        }
+
+                        // 提取目标链哈希
+                        String ethToH2cDstPattern = "get req txhash: ([a-fA-F0-9]+)";
+                        Pattern ethToH2cDstRegex = Pattern.compile(ethToH2cDstPattern);
+                        Matcher ethToH2cDstMatcher = ethToH2cDstRegex.matcher(h2cFromEthLogs);
+                        String ethToH2cDstHash = "";
+                        while (ethToH2cDstMatcher.find()) {
+                            ethToH2cDstHash = ethToH2cDstMatcher.group(1);
+                        }
+
+                        resultObj.put("dstHash", ethToH2cDstHash);
+                        resultObj.put("srcRespHash", ethRespHash);
+                        resultObj.put("srcReqHash", ethReqHash);
+                        resultObj.put("crossChainResult", "以太坊跨海河链操作执行成功");
+
+                    } else if (dstChainType.equalsIgnoreCase("chainmaker")) {
+                        // 读取长安链日志文件
+                        String cmFromEthLogCmd = "cat /root/CIPS-Gemini-ChainMaker/logs/chainmaker.log";
+                        String cmFromEthLogs = SSHConfig.executeCMD(cmFromEthLogCmd, "UTF-8");
+
+                        // 提取源链响应哈希
+                        String ethRespPattern = "get resp txhash: (0x[a-fA-F0-9]+)";
+                        Pattern ethRespRegex = Pattern.compile(ethRespPattern);
+                        Matcher ethRespMatcher = ethRespRegex.matcher(ethFromCmLogs);
+                        String ethRespHash = "";
+                        while (ethRespMatcher.find()) {
+                            ethRespHash = ethRespMatcher.group(1);
+                        }
+
+                        // 提取目标链哈希
+                        String ethToCmDstPattern = "get req txhash: ([a-fA-F0-9]+)";
+                        Pattern ethToCmDstRegex = Pattern.compile(ethToCmDstPattern);
+                        Matcher ethToCmDstMatcher = ethToCmDstRegex.matcher(cmFromEthLogs);
+                        String ethToCmDstHash = "";
+                        while (ethToCmDstMatcher.find()) {
+                            ethToCmDstHash = ethToCmDstMatcher.group(1);
+                        }
+
+                        resultObj.put("dstHash", ethToCmDstHash);
+                        resultObj.put("srcRespHash", ethRespHash);
+                        resultObj.put("srcReqHash", ethReqHash);
+                        resultObj.put("crossChainResult", "以太坊跨长安链操作执行成功");
                     }
-
-                    // 提取目标链哈希
-                    String ethToH2cDstPattern = "get req txhash: ([a-fA-F0-9]+)";
-                    Pattern ethToH2cDstRegex = Pattern.compile(ethToH2cDstPattern);
-                    Matcher ethToH2cDstMatcher = ethToH2cDstRegex.matcher(h2cFromEthLogs);
-                    String ethToH2cDstHash = "";
-                    while (ethToH2cDstMatcher.find()) {
-                        ethToH2cDstHash = ethToH2cDstMatcher.group(1);
-                    }
-
-                    resultObj.put("dstHash", ethToH2cDstHash);
-                    resultObj.put("srcRespHash", ethRespHash);
-                    resultObj.put("srcReqHash", ethReqHash);
-                    resultObj.put("crossChainResult", "以太坊跨链操作执行成功");
                     break;
 
                 case "h2chain":
@@ -587,55 +618,12 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                     String h2cCmd = "source /etc/profile && source ~/.bashrc && cd /root/CIPS-Gemini-H2Chain && ./crossH2C test";
                     String h2cResult = SSHConfig.executeCMD(h2cCmd, "UTF-8");
 
-                    // 等待5秒，确保日志已经生成
+                    // 等待35秒，确保日志已经生成
                     Thread.sleep(35000);
 
                     // 读取海河链日志文件
                     String h2cSrcLogCmd = "cat /root/CIPS-Gemini-H2Chain/logs/h2chain.log";
                     String h2cSrcLogs = SSHConfig.executeCMD(h2cSrcLogCmd, "UTF-8");
-
-                    // 连接目标链服务器
-                    SSHConfig.connect(dstIp);
-
-                    // 读取以太坊日志文件
-                    String ethLogCmdH2c = "cat /root/CIPS-Gemini-Ethereum/logs/eth.log";
-                    String ethLogsH2c = SSHConfig.executeCMD(ethLogCmdH2c, "UTF-8");
-
-                    // 提取源链请求哈希
-                    String h2cReqPattern = "Obtained request cmhash on the source chain\\(chainid: 13002, cmhash: ([a-fA-F0-9]+)\\)";
-                    Pattern h2cReqRegex = Pattern.compile(h2cReqPattern);
-                    Matcher h2cReqMatcher = h2cReqRegex.matcher(h2cSrcLogs);
-                    String h2cReqHash = h2cReqMatcher.find() ? h2cReqMatcher.group(1) : "";
-
-                    // 提取源链响应哈希（获取第一个有效匹配）
-                    String h2cRespPattern = "\\[DEBG\\]:\\s+get resp txhash: ([a-fA-F0-9]+)";
-                    Pattern h2cRespRegex = Pattern.compile(h2cRespPattern);
-                    Matcher h2cRespMatcher = h2cRespRegex.matcher(h2cSrcLogs);
-                    String h2cRespHash = h2cRespMatcher.find() ? h2cRespMatcher.group(1) : "";
-
-                    // 提取目标链哈希
-                    String h2cDstPattern = "get req txhash: (0x[a-fA-F0-9]+)";
-                    Pattern h2cDstRegex = Pattern.compile(h2cDstPattern);
-                    Matcher h2cDstMatcher = h2cDstRegex.matcher(ethLogsH2c);
-                    String h2cDstHash = h2cDstMatcher.find() ? h2cDstMatcher.group(1) : "";
-
-                    resultObj.put("dstHash", h2cDstHash);
-                    resultObj.put("srcRespHash", h2cRespHash);
-                    resultObj.put("srcReqHash", h2cReqHash);
-                    resultObj.put("crossChainResult", "海河链跨链操作执行成功");
-                    break;
-
-                case "chainmaker":
-                    // 执行长安链跨链命令
-                    String cmCmd = "source /etc/profile && source ~/.bashrc && cd /root/CIPS-Gemini-ChainMaker && go run main.go send 1";
-                    String cmResult = SSHConfig.executeCMD(cmCmd, "UTF-8");
-
-                    // 等待5秒，确保日志已经生成
-                    Thread.sleep(5000);
-
-                    // 读取长安链日志文件
-                    String cmLogCmd = "cat /root/CIPS-Gemini-ChainMaker/logs/chainmaker.log";
-                    String cmLogs = SSHConfig.executeCMD(cmLogCmd, "UTF-8");
 
                     // 连接目标链服务器
                     SSHConfig.connect(dstIp);
@@ -646,19 +634,96 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
 
                     if (dstChainType.equalsIgnoreCase("ethereum")) {
                         // 读取以太坊日志文件
+                        String ethLogCmdH2c = "cat /root/CIPS-Gemini-Ethereum/logs/eth.log";
+                        String ethLogsH2c = SSHConfig.executeCMD(ethLogCmdH2c, "UTF-8");
+
+                        // 提取源链请求哈希
+                        String h2cReqPattern = "Obtained request cmhash on the source chain\\(chainid: 13002, cmhash: ([a-fA-F0-9]+)\\)";
+                        Pattern h2cReqRegex = Pattern.compile(h2cReqPattern);
+                        Matcher h2cReqMatcher = h2cReqRegex.matcher(h2cSrcLogs);
+                        srcReqHash = h2cReqMatcher.find() ? h2cReqMatcher.group(1) : "";
+
+                        // 提取源链响应哈希
+                        String h2cRespPattern = "\\[DEBG\\]:\\s+get resp txhash: ([a-fA-F0-9]+)";
+                        Pattern h2cRespRegex = Pattern.compile(h2cRespPattern);
+                        Matcher h2cRespMatcher = h2cRespRegex.matcher(h2cSrcLogs);
+                        srcRespHash = h2cRespMatcher.find() ? h2cRespMatcher.group(1) : "";
+
+                        // 提取目标链哈希
+                        String h2cDstPattern = "get req txhash: (0x[a-fA-F0-9]+)";
+                        Pattern h2cDstRegex = Pattern.compile(h2cDstPattern);
+                        Matcher h2cDstMatcher = h2cDstRegex.matcher(ethLogsH2c);
+                        dstHash = h2cDstMatcher.find() ? h2cDstMatcher.group(1) : "";
+
+                        resultObj.put("dstHash", dstHash);
+                        resultObj.put("srcRespHash", srcRespHash);
+                        resultObj.put("srcReqHash", srcReqHash);
+                        resultObj.put("crossChainResult", "海河链跨以太坊操作执行成功");
+                        
+                    } else if (dstChainType.equalsIgnoreCase("chainmaker")) {
+                        // 读取长安链日志文件
+                        String cmFromEthLogCmd = "cat /root/CIPS-Gemini-ChainMaker/logs/chainmaker.log";
+                        String cmFromEthLogs = SSHConfig.executeCMD(cmFromEthLogCmd, "UTF-8");
+
+                        // 提取源链请求哈希
+                        String h2cReqPattern = "\\[DEBG\\]:\\s+Obtained request cmhash on the source chain\\(chainid: 13002, cmhash: ([a-fA-F0-9]+)\\)";
+                        Pattern h2cReqRegex = Pattern.compile(h2cReqPattern);
+                        Matcher h2cReqMatcher = h2cReqRegex.matcher(h2cSrcLogs);
+                        srcReqHash = h2cReqMatcher.find() ? h2cReqMatcher.group(1) : "";
+
+                        // 提取源链响应哈希
+                        String h2cRespPattern = "\\[DEBG\\]:\\s+get resp txhash: ([a-fA-F0-9]+)";
+                        Pattern h2cRespRegex = Pattern.compile(h2cRespPattern);
+                        Matcher h2cRespMatcher = h2cRespRegex.matcher(h2cSrcLogs);
+                        srcRespHash = h2cRespMatcher.find() ? h2cRespMatcher.group(1) : "";
+
+                        // 提取目标链哈希
+                        String h2cDstPattern = "get req txhash: ([a-fA-F0-9]+)";
+                        Pattern h2cDstRegex = Pattern.compile(h2cDstPattern);
+                        Matcher h2cDstMatcher = h2cDstRegex.matcher(cmFromEthLogs);
+                        dstHash = h2cDstMatcher.find() ? h2cDstMatcher.group(1) : "";
+
+                        resultObj.put("dstHash", dstHash);
+                        resultObj.put("srcRespHash", srcRespHash);
+                        resultObj.put("srcReqHash", srcReqHash);
+                        resultObj.put("crossChainResult", "海河链跨长安链操作执行成功");
+                    }
+                    break;
+
+                case "chainmaker":
+                    // 执行长安链跨链命令
+                    String cmCmd = "source /etc/profile && source ~/.bashrc && cd /root/CIPS-Gemini-ChainMaker && go run main.go send 1";
+                    String cmResult = SSHConfig.executeCMD(cmCmd, "UTF-8");
+
+                    // 等待5秒，确保日志已经生成
+                    Thread.sleep(10000);
+
+                    // 读取长安链日志文件
+                    String cmFromEthLogCmd = "cat /root/CIPS-Gemini-ChainMaker/logs/chainmaker.log";
+                    String cmFromEthLogs = SSHConfig.executeCMD(cmFromEthLogCmd, "UTF-8");
+
+                    // 连接目标链服务器
+                    SSHConfig.connect(dstIp);
+
+                    srcReqHash = "";
+                    srcRespHash = "";
+                    dstHash = "";
+
+                    if (dstChainType.equalsIgnoreCase("ethereum")) {
+                        // 读取以太坊日志文件
                         String ethLogCmd = "cat /root/CIPS-Gemini-Ethereum/logs/eth.log";
                         String ethLogs = SSHConfig.executeCMD(ethLogCmd, "UTF-8");
 
                         // 提取源链请求哈希
                         String srcReqPattern = "Obtained request cmhash on the source chain\\([0-9]+\\): ([a-fA-F0-9]+)";
                         Pattern srcReqRegex = Pattern.compile(srcReqPattern);
-                        Matcher srcReqMatcher = srcReqRegex.matcher(cmLogs);
+                        Matcher srcReqMatcher = srcReqRegex.matcher(cmFromEthLogs);
                         srcReqHash = srcReqMatcher.find() ? srcReqMatcher.group(1) : "";
 
                         // 提取源链响应哈希（获取第一个有效匹配）
-                        String srcRespPattern = "\\[DEBG\\]:\\s+get resp txhash: ([a-fA-F0-9]+)";
+                        String srcRespPattern = "get resp txhash: ([a-fA-F0-9]+)";
                         Pattern srcRespRegex = Pattern.compile(srcRespPattern);
-                        Matcher srcRespMatcher = srcRespRegex.matcher(cmLogs);
+                        Matcher srcRespMatcher = srcRespRegex.matcher(cmFromEthLogs);
                         srcRespHash = srcRespMatcher.find() ? srcRespMatcher.group(1) : "";
 
                         // 提取目标链哈希
@@ -675,13 +740,13 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                         // 提取源链请求哈希
                         String srcReqPattern = "Obtained request cmhash on the source chain\\(11002\\): ([a-fA-F0-9]+)";
                         Pattern srcReqRegex = Pattern.compile(srcReqPattern);
-                        Matcher srcReqMatcher = srcReqRegex.matcher(cmLogs);
+                        Matcher srcReqMatcher = srcReqRegex.matcher(cmFromEthLogs);
                         srcReqHash = srcReqMatcher.find() ? srcReqMatcher.group(1) : "";
 
                         // 提取源链响应哈希（获取第一个有效匹配）
-                        String srcRespPattern = "\\[DEBG\\]:\\s+get resp txhash: ([a-fA-F0-9]+)";
+                        String srcRespPattern = "get resp txhash: ([a-fA-F0-9]+)";
                         Pattern srcRespRegex = Pattern.compile(srcRespPattern);
-                        Matcher srcRespMatcher = srcRespRegex.matcher(cmLogs);
+                        Matcher srcRespMatcher = srcRespRegex.matcher(cmFromEthLogs);
                         srcRespHash = srcRespMatcher.find() ? srcRespMatcher.group(1) : "";
 
                         // 提取目标链哈希
@@ -752,179 +817,3 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
 
 }
 
-// public CommonResp doCross(CrossReq crossreq) {
-// int crossTYPE =
-// crossreq.getCrossType();//from和to是区块链的编号，1，2是两条以太坊，3是chainmaker
-// int crossFROM = crossreq.getCrossFrom();
-// int crossTO = crossreq.getCrossTo();
-// //int crossCONTRACT =crossreq.getCrossContract(); 合约选择，毕设中没有涉及到，可以在改进版本中补全
-// int PARAM = crossreq.getParam();
-// CommonResp queryBlockInfoResp = new CommonResp();
-// String logs = null;
-// try {
-// SSHConfig.connect();
-// if (crossTYPE == 2) {//中继跨链
-// if (crossTO == 3) {
-//
-// logs = SSHConfig.executeCMD("source ~/.profile && cd CIPS-ETHEREUM-private &&
-// go run *.go -c eth2chainmaker -r true -ap beefAccess -ag " + PARAM, "UTF-8");
-//
-// } else {
-// if (crossFROM == 1) {//Paris to Tianjin
-// logs = SSHConfig.executeCMD("source ~/.profile && cd CIPS-ETHEREUM-private &&
-// go run *.go -c eth -r true -ap beefAccess -ag " + PARAM + " -cd 12",
-// "UTF-8");
-// }
-// if (crossFROM == 2) {//Paris to Beijing
-// logs = SSHConfig.executeCMD("source ~/.profile && cd CIPS-ETHEREUM-private &&
-// go run *.go -c eth -r true -ap beefAccess -ag " + PARAM + " -cd 21",
-// "UTF-8");
-//
-// }
-// }
-// }
-// if (crossTYPE == 1) {
-// if (crossTO == 3) {
-//
-// logs = SSHConfig.executeCMD("source ~/.profile && cd CIPS-ETHEREUM-private &&
-// go run *.go -c eth2chainmaker -r true -ap beefAccess -ag " + PARAM, "UTF-8");
-//
-// } else {
-// if (crossFROM == 1) {//Paris to Tianjin
-// logs = SSHConfig.executeCMD("source ~/.profile && cd CIPS-ETHEREUM-private &&
-// go run *.go -c eth -r true -ap beefAccess -ag " + PARAM + " -cd 12",
-// "UTF-8");
-// }
-// if (crossFROM == 2) {//Paris to Beijing
-// logs = SSHConfig.executeCMD("source ~/.profile && cd CIPS-ETHEREUM-private &&
-// go run *.go -c eth -r true -ap beefAccess -ag " + PARAM + " -cd 21",
-// "UTF-8");
-//
-// }
-// }
-//// System.out.println("cross-chain finished");
-// } catch (Exception e) {
-// System.out.println("SSH ERROR");
-// }
-/// *
-// 交易哈希部分暂时毕设未实现
-// String[] log = logs.split("\n");
-// String txfrom = "";
-// String txto = "";
-// String txback = "";
-// if (transport_cityblock == CityBlock.Tianjin){//Paris to Tianjin
-// String m1 = "eth source TxHash is: ";
-// String m2 = "eth target TxHash is: ";
-// String m3 = "eth response TxHash is: ";
-// for (int i=0; i<log.length; i++){
-// if (log[i].indexOf(m1) != -1){
-//// System.out.println(log[i]);
-//// System.out.println(log[i].indexOf(m1));
-//// System.out.println(log[i].length());
-// txfrom =
-// log[i].substring(log[i].indexOf(m1)+m1.length(),log[i].indexOf(m1)+m1.length()+66);
-// break;
-// }
-// }
-// for (int i=0; i<log.length; i++){
-// if (log[i].indexOf(m2) != -1){
-//// System.out.println(log[i]);
-//// System.out.println(log[i].indexOf(m2));
-//// System.out.println(log[i].length());
-// txto =
-// log[i].substring(log[i].indexOf(m2)+m2.length(),log[i].indexOf(m2)+m2.length()+66);
-// break;
-// }
-// }
-// for (int i=0; i<log.length; i++){
-// if (log[i].indexOf(m3) != -1){
-// txback =
-// log[i].substring(log[i].indexOf(m3)+m3.length(),log[i].indexOf(m3)+m3.length()+66);
-// break;
-// }
-// }
-// }
-// if (transport_cityblock == CityBlock.Beijing){//Paris to Beijing
-// String m1 = "eth source TxHash is: ";
-// String m2 = "chainmaker target TxId is: ";
-// String m3 = "eth response TxHash is: ";
-// for (int i=0; i<log.length; i++){
-// if (log[i].indexOf(m1) != -1){
-// txfrom =
-// log[i].substring(log[i].indexOf(m1)+m1.length(),log[i].indexOf(m1)+m1.length()+66);
-// break;
-// }
-// }
-// for (int i=0; i<log.length; i++){
-// if (log[i].indexOf(m2) != -1){
-// txto =
-// log[i].substring(log[i].indexOf(m2)+m2.length(),log[i].indexOf(m2)+m2.length()+64);
-// break;
-// }
-// }
-// for (int i=0; i<log.length; i++){
-// if (log[i].indexOf(m3) != -1){
-// txback =
-// log[i].substring(log[i].indexOf(m3)+m3.length(),log[i].indexOf(m3)+m3.length()+66);
-// break;
-// }
-// }
-// }
-// System.out.println("====Crosschain Key Messages====");
-// System.out.println("[from id]"+crossFROM);
-// System.out.println("[to id]"+crossTO);
-// System.out.println("[param]"+PARAM);
-// System.out.println("[type]"+crossTYPE);
-// System.out.println("[Source TX]"+txfrom);
-// System.out.println("[Target TX]"+txto);
-// System.out.println("[Response TX]"+txback);
-// System.out.println("===============================");
-// Crosschain cross = new Crosschain()
-//
-// .setCrossFrom(String.valueOf(crossFROM))
-// .setCrossTo(String.valueOf(crossTO))
-// .setTxFrom(txfrom)
-// .setTxTo(txto)
-// .setTxBack(txback);
-//
-// */
-// JSONObject Crosschaininfo = new JSONObject();
-//
-//
-// Crosschaininfo.put("crossFrom", crossFROM);
-// Crosschaininfo.put("crossTo", crossTO);
-// Crosschaininfo.put("crosType", crossTYPE);
-// //Crosschaininfo.put("crossContract", crossCONTRACT); 合约选择，毕设中暂时不需要
-// Crosschaininfo.put("crossParam", PARAM);
-// Crosschaininfo.put("crossResult", 1);
-// //Crosschaininfo.put("txFrom",txfrom);哈希部分毕设暂时不需要
-// // Crosschaininfo.put("txTo",txto);
-// //Crosschaininfo.put("txBack",txback);
-//
-//
-//
-// Crosschain crosschain = new Crosschain()
-// .setCrossFrom(crossreq.getCrossFrom())
-// .setCrossTo(crossreq.getCrossTo())
-// .setCrossType(crossreq.getCrossType())//改一下直连中继为布尔型
-// .setCrossResult(true)
-// .setCrossParam(crossreq.getParam())
-// .setCrossTime(new Date());
-//
-// // 查询自增id下一个是多少
-// QueryWrapper<Crosschain> wrapper = new QueryWrapper<>();
-// wrapper.select("cross_id");
-// List<Crosschain> cross = crosschainMapper.selectList(wrapper);
-// Long maxId = Long.valueOf(0);
-// for (int i = 0; i < cross.size(); i++) {
-// Long perId = cross.get(i).getCrossId();
-// if (perId > maxId) maxId = perId;
-// }
-// maxId = maxId + 1;
-//
-// Crosschaininfo.put("crossId", maxId);
-// queryBlockInfoResp.setRet(ResultCode.SUCCESS);
-// queryBlockInfoResp.setData(Crosschaininfo);
-// int insert = this.crosschainMapper.insert(crosschain);
-// return queryBlockInfoResp;
-// }

@@ -25,21 +25,52 @@ LOG_DIR="$REPO_DIR/logs"
 LOG_FILE="$LOG_DIR/chainmaker.log"
 GATEWAY_PID_FILE="/tmp/chainmaker_gateway.pid"
 MONITOR_PID_FILE="/tmp/chainmaker_monitor.pid"
+CHECK_PORT=8088  # 需要检查的端口
 
 # 4. 定义日志函数
 log_info() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: $1" >> "$LOG_FILE"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: $1"
 }
 
 log_error() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $1" >> "$LOG_FILE"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $1"
 }
 
 log_success() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] SUCCESS: $1" >> "$LOG_FILE"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] SUCCESS: $1"
 }
 
-# 5. 清理旧进程和日志
+# 5. 检查指定端口是否被占用，如果被占用则杀死进程
+check_port() {
+    local port=$1
+    log_info "检查端口 $port 是否被占用..."
+    
+    # 查找占用端口的进程
+    local pid=$(lsof -ti:$port)
+    
+    if [ -n "$pid" ]; then
+        log_info "端口 $port 被进程 $pid 占用，正在终止该进程..."
+        kill -9 $pid
+        sleep 2
+        
+        # 再次检查确认进程已被终止
+        if lsof -ti:$port > /dev/null; then
+            log_error "无法终止占用端口 $port 的进程，请手动检查"
+            return 1
+        else
+            log_success "已成功终止占用端口 $port 的进程"
+        fi
+    else
+        log_info "端口 $port 未被占用"
+    fi
+    
+    return 0
+}
+
+# 6. 清理旧进程和日志
 cleanup() {
     # 清理旧进程
     if [ -f "$GATEWAY_PID_FILE" ]; then
@@ -73,7 +104,7 @@ cleanup() {
     fi
 }
 
-# 6. 记录环境信息
+# 7. 记录环境信息
 log_info "环境变量："
 log_info "REPO_DIR=$REPO_DIR"
 log_info "TARGET_FILE=$TARGET_FILE"
@@ -82,14 +113,14 @@ log_info "PATH=$PATH"
 log_info "GOPATH=$GOPATH"
 log_info "GOROOT=$GOROOT"
 
-# 7. 创建日志目录
+# 8. 创建日志目录
 mkdir -p "$LOG_DIR"
 if [ $? -ne 0 ]; then
     log_error "创建日志目录失败"
     exit 1
 fi
 
-# 8. 进入指定目录
+# 9. 进入指定目录
 cd "$REPO_DIR"
 if [ $? -ne 0 ]; then
     log_error "进入目录 $REPO_DIR 失败"
@@ -99,14 +130,14 @@ fi
 
 log_info "当前工作目录: $(pwd)"
 
-# 9. 备份原文件
+# 10. 备份原文件
 cp "$TARGET_FILE" "${TARGET_FILE}.bak"
 if [ $? -ne 0 ]; then
     log_error "备份文件失败"
     exit 1
 fi
 
-# 10. 更新配置文件
+# 11. 更新配置文件
 log_info "开始更新配置文件"
 
 # 替换配置
@@ -124,14 +155,22 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 11. 检查配置更新
+# 12. 检查配置更新
 log_info "更新后的配置内容："
 sed -n '25p;32p' "$TARGET_FILE" >> "$LOG_FILE"
 
-# 12. 清理旧进程和日志
+# 13. 检查端口占用情况
+check_port $CHECK_PORT
+if [ $? -ne 0 ]; then
+    log_error "端口 $CHECK_PORT 检查失败，脚本将退出"
+    mv "${TARGET_FILE}.bak" "$TARGET_FILE"
+    exit 1
+fi
+
+# 14. 清理旧进程和日志
 cleanup
 
-# 13. 启动长安链网关
+# 15. 启动长安链网关
 log_info "开始启动长安链网关..."
 
 # 检查环境
@@ -146,10 +185,10 @@ CHAINMAKER_PID=$!
 echo $CHAINMAKER_PID > "$GATEWAY_PID_FILE"
 log_info "网关进程已启动 (PID: $CHAINMAKER_PID)"
 
-# 14. 等待网关启动
+# 16. 等待网关启动
 sleep 5
 
-# 15. 检查网关是否成功启动
+# 17. 检查网关是否成功启动
 if ! ps -p $CHAINMAKER_PID > /dev/null; then
     log_error "长安链网关启动失败"
     log_error "完整启动日志："
@@ -158,7 +197,7 @@ if ! ps -p $CHAINMAKER_PID > /dev/null; then
     exit 1
 fi
 
-# 16. 启动监控进程（在后台运行）
+# 18. 启动监控进程（在后台运行）
 (
     # 监控进程的清理函数
     cleanup_monitor() {
@@ -186,10 +225,10 @@ fi
 MONITOR_PID=$!
 log_info "监控进程已启动 (PID: $MONITOR_PID)"
 
-# 17. 删除备份文件
+# 19. 删除备份文件
 rm -f "${TARGET_FILE}.bak"
 
-# 18. 输出最终启动信息
+# 20. 输出最终启动信息
 log_success "长安链网关已成功启动"
 log_info "网关进程 PID: $CHAINMAKER_PID"
 log_info "监控进程 PID: $MONITOR_PID"
