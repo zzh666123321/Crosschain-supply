@@ -25,6 +25,11 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.websocket.WebSocketService;
 
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.http.HttpService;
@@ -46,6 +51,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.cert.X509Certificate;
 
 /**
  * <p>
@@ -311,14 +322,26 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            // fabric liantong 暂用h2数据
-            String targetUrl = "http://" + ipAddress + ":8000/api/blockChain/blockHeight";
+        } else if (portNumber.equals(liantongname)) {
+            String targetUrl = "https://121.37.119.118:8443/api/baas/explorer/unicom/blockchains/4e8776c142f845e589bd00db6448d449/channels/ch1/blocks";
+            String authorizationToken = chainreq.getAuthorizationToken();
+
+            String logs = "";
+
             try {
+                // 禁用 SSL 验证
+                disableSSLVerification();
+
+                // 创建URL对象
                 URL url = new URL(targetUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                // 打开连接
+                HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
 
+                // 设置Authorization头部
+                connection.setRequestProperty("authorization", authorizationToken);
+
+                // 读取响应数据
                 BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String inputLine;
                 StringBuilder response = new StringBuilder();
@@ -326,9 +349,11 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                     response.append(inputLine);
                 }
                 in.close();
-                BigInteger blockHeight = BigInteger.valueOf(Long.parseLong(response.toString()));
+
+                BigInteger height = JsonParser.parseString(response.toString()).getAsJsonObject()
+                        .get("total_block_count").getAsBigInteger().subtract(BigInteger.valueOf(1));
                 JSONObject heightinfo = new JSONObject();
-                heightinfo.put("heightinfo", blockHeight);
+                heightinfo.put("heightinfo", height);
                 chainresp.setData(heightinfo);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -556,16 +581,25 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            // fabric liantong 暂用h2数据
-            String targetUrl = "http://" + ipAddress + ":8000/api/blockChain/blockByHeight?blockHeight="
-                    + blockheightReq.getBlockHEIGHT() + "&includeTransactions=true";
+        } else if (portNumber.equals(liantongname)) {
+            String targetUrl = "https://121.37.119.118:8443/api/baas/explorer/unicom/blockchains/4e8776c142f845e589bd00db6448d449/channels/ch1/blocks?start_block_num="
+                    + blockheightReq.getBlockHEIGHT() + "&block_count=1";
+            String authorizationToken = blockheightReq.getAuthorizationToken();
             String logs = "";
             try {
+                // 禁用 SSL 验证
+                disableSSLVerification();
+
+                // 创建URL对象
                 URL url = new URL(targetUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                // 打开连接
+                HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
 
+                // 设置Authorization头部
+                connection.setRequestProperty("authorization", authorizationToken);
+
+                // 读取响应数据
                 BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String inputLine;
                 StringBuilder response = new StringBuilder();
@@ -577,43 +611,33 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            // System.out.println("查询结束...");
-            JsonObject headerJsonObj = JsonParser.parseString(logs).getAsJsonObject().getAsJsonObject("Header");
-            BigInteger blockHeight = headerJsonObj.get("Height").getAsBigInteger();
-            String blockHash = JsonParser.parseString(logs).getAsJsonObject().get("BlockHash").getAsString();
-            String timeStamp = headerJsonObj.get("Time").getAsString();
-            BigInteger blockSize = JsonParser.parseString(logs).getAsJsonObject().get("BlockSize").getAsBigInteger();
-            BigInteger transactionCount = JsonParser.parseString(logs).getAsJsonObject().getAsJsonObject("Body")
-                    .get("TransactionsCount").getAsBigInteger();
-            String previousBlockHash = headerJsonObj.get("PreviousBlockHash").getAsString();
-            String merkleTreeRootOfWorldState = headerJsonObj.get("MerkleTreeRootOfWorldState").getAsString();
-            String merkleTreeRootOfTransactions = headerJsonObj.get("MerkleTreeRootOfTransactions").getAsString();
-            String merkleTreeRootOfTransactionState = headerJsonObj.get("MerkleTreeRootOfTransactionState")
-                    .getAsString();
-            String signerPubkey = headerJsonObj.get("SignerPubkey").getAsString();
+            JsonObject rawBlock = JsonParser.parseString(logs).getAsJsonObject().getAsJsonArray("blocks").get(0)
+                    .getAsJsonObject();
+            String channelName = rawBlock.get("channel_name").getAsString();
+            String hash = rawBlock.get("hash").getAsString();
+            BigInteger number = rawBlock.get("number").getAsBigInteger();
+            String dataHash = rawBlock.get("data_hash").getAsString();
+            String previousHash = rawBlock.get("previous_hash").getAsString();
+            String nextHash = rawBlock.get("next_hash").getAsString();
+            if (nextHash.equals(""))
+                nextHash = "null";
+            BigInteger lastConfigIndex = rawBlock.get("last_config_index").getAsBigInteger();
+            BigInteger txCount = rawBlock.get("tx_count").getAsBigInteger();
+            String createdAt = rawBlock.get("created_at").getAsString();
 
             JSONObject blockInfo = new JSONObject();
-            blockInfo.put("blockHeight", blockHeight);
-            blockInfo.put("blockHash", blockHash);
-            blockInfo.put("timeStamp", timeStamp);
-            blockInfo.put("blockSize", blockSize);
-            blockInfo.put("transactionCount", transactionCount);
-            blockInfo.put("previousBlockHash", previousBlockHash);
-            blockInfo.put("merkleTreeRootOfWorldState", merkleTreeRootOfWorldState);
-            blockInfo.put("merkleTreeRootOfTransactions", merkleTreeRootOfTransactions);
-            blockInfo.put("merkleTreeRootOfTransactionState", merkleTreeRootOfTransactionState);
-            blockInfo.put("signerPubkey", signerPubkey);
-
+            blockInfo.put("channelName", channelName);
+            blockInfo.put("hash", hash);
+            blockInfo.put("number", number);
+            blockInfo.put("dataHash", dataHash);
+            blockInfo.put("previousHash", previousHash);
+            blockInfo.put("nextHash", nextHash);
+            blockInfo.put("lastConfigIndex", lastConfigIndex);
+            blockInfo.put("txCount", txCount);
+            blockInfo.put("createdAt", createdAt);
             queryBlockInfoResp.setRet(ResultCode.SUCCESS);
             queryBlockInfoResp.setData(blockInfo);
-
-            String temporaryname = "";
-            if (portNumber.equals(fabricname))
-                temporaryname = "fabric";
-            else
-                temporaryname = "联通";
-            System.out.println("-------" + temporaryname + "区块信息查询完毕-------");
+            System.out.println("-------联通链区块信息查询完毕-------");
         }
 
         return queryBlockInfoResp;
@@ -933,14 +957,27 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                 }
             }
             System.out.println("-------BuBi最新十个区块信息查询完毕-------");
-        } else {
-            // fabric liantong 暂用h2数据
+        } else if (portNumber.equals(liantongname)) {
+            String targetUrl = "https://121.37.119.118:8443/api/baas/explorer/unicom/blockchains/4e8776c142f845e589bd00db6448d449/channels/ch1/blocks";
+            String authorizationToken = chainreq.getAuthorizationToken();
+
+            String logs = "";
+
             BigInteger height = new BigInteger("0");
             try {
-                URL url = new URL("http://" + ipAddress + ":8000/api/blockChain/blockHeight");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                // 禁用 SSL 验证
+                disableSSLVerification();
+
+                // 创建URL对象
+                URL url = new URL(targetUrl);
+                // 打开连接
+                HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
 
+                // 设置Authorization头部
+                connection.setRequestProperty("authorization", authorizationToken);
+
+                // 读取响应数据
                 BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String inputLine;
                 StringBuilder response = new StringBuilder();
@@ -948,71 +985,73 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
                     response.append(inputLine);
                 }
                 in.close();
-                height = BigInteger.valueOf(Long.parseLong(response.toString()));
+
+                height = JsonParser.parseString(response.toString()).getAsJsonObject()
+                        .get("total_block_count").getAsBigInteger().subtract(BigInteger.valueOf(1));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            int j = 0;
-            for (BigInteger i = height; i.compareTo(BigInteger.ZERO) >= 0; i = i.subtract(new BigInteger("1"))) {
-                String targetUrl = "http://" + ipAddress + ":8000/api/blockChain/blockByHeight?blockHeight="
-                        + i.toString() + "&includeTransactions=true";
-                String logs = "";
-                try {
-                    URL url = new URL(targetUrl);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("GET");
 
-                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    String inputLine;
-                    StringBuilder response = new StringBuilder();
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-                    logs = response.toString();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            targetUrl = "https://121.37.119.118:8443/api/baas/explorer/unicom/blockchains/4e8776c142f845e589bd00db6448d449/channels/ch1/blocks?start_block_num="
+                    + height + "&block_count=10";
+            try {
+                // 禁用 SSL 验证
+                disableSSLVerification();
+
+                // 创建URL对象
+                URL url = new URL(targetUrl);
+                // 打开连接
+                HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                // 设置Authorization头部
+                connection.setRequestProperty("authorization", authorizationToken);
+
+                // 读取响应数据
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
                 }
+                in.close();
 
-                // System.out.println("H2hain查询结束...");
-                JsonObject headerJsonObj = JsonParser.parseString(logs).getAsJsonObject().getAsJsonObject("Header");
-                BigInteger blockHeight = headerJsonObj.get("Height").getAsBigInteger();
-                String blockHash = JsonParser.parseString(logs).getAsJsonObject().get("BlockHash").getAsString();
-                String timeStamp = headerJsonObj.get("Time").getAsString();
-                BigInteger blockSize = JsonParser.parseString(logs).getAsJsonObject().get("BlockSize")
-                        .getAsBigInteger();
-                BigInteger transactionCount = JsonParser.parseString(logs).getAsJsonObject().getAsJsonObject("Body")
-                        .get("TransactionsCount").getAsBigInteger();
-                String previousBlockHash = headerJsonObj.get("PreviousBlockHash").getAsString();
-                String merkleTreeRootOfWorldState = headerJsonObj.get("MerkleTreeRootOfWorldState").getAsString();
-                String merkleTreeRootOfTransactions = headerJsonObj.get("MerkleTreeRootOfTransactions").getAsString();
-                String merkleTreeRootOfTransactionState = headerJsonObj.get("MerkleTreeRootOfTransactionState")
-                        .getAsString();
-                String signerPubkey = headerJsonObj.get("SignerPubkey").getAsString();
+                logs = response.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            BigInteger totalNumber = JsonParser.parseString(logs).getAsJsonObject().get("block_count")
+                    .getAsBigInteger();
+            for (BigInteger i = BigInteger.valueOf(0); i.compareTo(totalNumber) < 0; i = i.add(BigInteger.ONE)) {
+                JsonObject rawBlock = JsonParser.parseString(logs).getAsJsonObject().getAsJsonArray("blocks")
+                        .get(i.intValue())
+                        .getAsJsonObject();
+                String channelName = rawBlock.get("channel_name").getAsString();
+                String hash = rawBlock.get("hash").getAsString();
+                BigInteger number = rawBlock.get("number").getAsBigInteger();
+                String dataHash = rawBlock.get("data_hash").getAsString();
+                String previousHash = rawBlock.get("previous_hash").getAsString();
+                String nextHash = rawBlock.get("next_hash").getAsString();
+                if (nextHash.equals(""))
+                    nextHash = "null";
+                BigInteger lastConfigIndex = rawBlock.get("last_config_index").getAsBigInteger();
+                BigInteger txCount = rawBlock.get("tx_count").getAsBigInteger();
+                String createdAt = rawBlock.get("created_at").getAsString();
 
                 JSONObject blockInfo = new JSONObject();
-                blockInfo.put("blockHeight", blockHeight);
-                blockInfo.put("blockHash", blockHash);
-                blockInfo.put("timeStamp", timeStamp);
-                blockInfo.put("blockSize", blockSize);
-                blockInfo.put("transactionCount", transactionCount);
-                blockInfo.put("previousBlockHash", previousBlockHash);
-                blockInfo.put("merkleTreeRootOfWorldState", merkleTreeRootOfWorldState);
-                blockInfo.put("merkleTreeRootOfTransactions", merkleTreeRootOfTransactions);
-                blockInfo.put("merkleTreeRootOfTransactionState", merkleTreeRootOfTransactionState);
-                blockInfo.put("signerPubkey", signerPubkey);
-
-                j++;
+                blockInfo.put("channelName", channelName);
+                blockInfo.put("hash", hash);
+                blockInfo.put("number", number);
+                blockInfo.put("dataHash", dataHash);
+                blockInfo.put("previousHash", previousHash);
+                blockInfo.put("nextHash", nextHash);
+                blockInfo.put("lastConfigIndex", lastConfigIndex);
+                blockInfo.put("txCount", txCount);
+                blockInfo.put("createdAt", createdAt);
                 blocks.add(blockInfo);
-                if (j == 10)
-                    break;
             }
-            String temporaryname = "";
-            if (portNumber.equals(fabricname))
-                temporaryname = "fabric";
-            else
-                temporaryname = "联通";
-            System.out.println("-------" + temporaryname + "最新十个区块信息查询完毕-------");
+
+            System.out.println("-------联通链最新十个区块信息查询完毕-------");
         }
         JSONObject tenblocks = new JSONObject();
         tenblocks.put("tenBlocksInfo", blocks);
@@ -1020,6 +1059,37 @@ public class ChainServiceImpl extends ServiceImpl<ChainMapper, Chain> implements
         queryNewBlock.setData(tenblocks);
 
         return queryNewBlock;
+    }
+
+    private static void disableSSLVerification() {
+        try {
+            TrustManager[] trustAllCertificates = new TrustManager[] {
+                    new X509TrustManager() {
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
+
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        }
+
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        }
+                    }
+            };
+
+            // 设置SSLContext
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAllCertificates, new java.security.SecureRandom());
+
+            // 设置默认的SSLSocketFactory
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+
+            // 设置默认的HostnameVerifier，跳过hostname验证
+            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public CommonResp checkTxInfo(TxhashReq txhashreq) { ///////////////

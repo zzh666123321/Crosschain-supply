@@ -6,16 +6,14 @@ import lombok.Data;
 
 import java.util.Date;
 
+@Data
+@ApiModel(value = "区块链IP请求格式")
+public class ChainReq {
 
+    @ApiModelProperty(value = "区块链IP")
+    private String chainIP;
 
-    @Data
-    @ApiModel(value="区块链IP请求格式")
-    public class ChainReq {
+    @ApiModelProperty(value = "身份token")
+    private String authorizationToken;
 
-        @ApiModelProperty(value = "区块链IP")
-        private String chainIP;
-
-
-    }
-
-
+}
