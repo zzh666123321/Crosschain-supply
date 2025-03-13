@@ -375,7 +375,7 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 // todo: for local test
                 String cmCmd = String.format(
                         "source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/chainmaker_start1.sh %s %s %d > chainmaker.log 2>&1 &",
-                        "13002", "192.168.0.2", 8087);
+                        getChainId(dstChainType, dstIp), dstIp, srcPort(dstChainType));
                 String cmResult = SSHConfig.executeCMD(cmCmd, "UTF-8");
                 resultObj.put("chainmakerStartResult_" + srcIp, "长安链网关启动成功");
                 resultObj.put("chainmakerStartLog_" + srcIp, cmResult); 
@@ -383,11 +383,21 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 
             case "h2chain":
                 //for test
-                String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", 11002);
+                String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(dstChainType, dstIp));
                 // String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(dstChainType, dstIp));
                 String h2cResult = SSHConfig.executeCMD(h2cCmd, "UTF-8");
                 resultObj.put("h2chainStartResult_" + srcIp, "海河链网关启动成功");
                 resultObj.put("h2chainStartLog_" + srcIp, h2cResult);
+                break;
+                
+            case "bubi":
+                String bubiCmd = String.format(
+                        "source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/bubi_start.sh %s %s %s %d > bubi.log 2>&1 &",
+                        getChainId(srcChainType, srcIp), getChainId(dstChainType, dstIp), dstIp, srcPort(dstChainType));
+            
+                String bubiResult = SSHConfig.executeCMD(bubiCmd, "UTF-8");
+                resultObj.put("bubiStartResult_" + srcIp, "布比链网关启动成功");
+                resultObj.put("bubiStartLog_" + srcIp, bubiResult);
                 break;
                 
             default:
@@ -415,7 +425,7 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 // todo: for local test
                 String cmCmd = String.format(
                         "source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/chainmaker_start1.sh %s %s %d > chainmaker.log 2>&1 &",
-                        "12002", "192.168.0.2", 8086);
+                        getChainId(dstChainType, dstIp), dstIp, srcPort(dstChainType));
                 String cmResult = SSHConfig.executeCMD(cmCmd, "UTF-8");
                 resultObj.put("chainmakerStartResult_" + dstIp, "长安链网关启动成功");
                 resultObj.put("chainmakerStartLog_" + dstIp, cmResult);
@@ -424,10 +434,23 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
             case "h2chain":
                 // String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(srcChainType, srcIp));
                 //for test
-                String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", 11002);
+                String h2cCmd = String.format("source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/h2chain_start.sh %d > h2chain.log 2>&1 &", getChainId(dstChainType, dstIp));
                 String h2cResult = SSHConfig.executeCMD(h2cCmd, "UTF-8");
                 resultObj.put("h2chainStartResult_" + dstIp, "海河链网关启动成功");
                 resultObj.put("h2chainStartLog_" + dstIp, h2cResult);
+                break;
+                
+            case "bubi":
+            //test
+                String bubiCmd = String.format(
+                        "source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/bubi_start.sh %s %s %s %d > bubi.log 2>&1 &",
+                        getChainId(srcChainType, srcIp), getChainId(dstChainType, dstIp), dstIp, srcPort(dstChainType));
+                // String bubiCmd = String.format(
+                //         "source /etc/profile && source ~/.bashrc && cd /root/shell && nohup /root/shell/bubi_start.sh %s %s %s %d > bubi.log 2>&1 &",
+                //        14002, 11002, "192.168.0.2", 8088);
+                String bubiResult = SSHConfig.executeCMD(bubiCmd, "UTF-8");
+                resultObj.put("bubiStartResult_" + dstIp, "布比链网关启动成功");
+                resultObj.put("bubiStartLog_" + dstIp, bubiResult);
                 break;
                 
             default:
@@ -446,6 +469,8 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 return 8088;
             case "h2chain":
                 return 8087;
+            case "bubi":
+                return 8089;
             default:
                 throw new IllegalArgumentException("不支持的链类型: " + chainType);
         }
@@ -474,6 +499,8 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                 return 11000 + lastNumber;
             case "h2chain":
                 return 13000 + lastNumber;
+            case "bubi":
+                return 14000 + lastNumber;
             default:
                 throw new IllegalArgumentException("不支持的链类型: " + chainType);
         }
@@ -513,12 +540,14 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                         dstChainId = 11000 + Integer.parseInt(dstIpParts[3]);
                     } else if (dstChainType.equalsIgnoreCase("h2chain")) {
                         dstChainId = 13000 + Integer.parseInt(dstIpParts[3]);
+                    }else if (dstChainType.equalsIgnoreCase("bubi")) {
+                        dstChainId = 14000 + Integer.parseInt(dstIpParts[3]);
                     }
 
                     // 执行以太坊跨链命令
                     String ethCmd = String.format(
                             "source /etc/profile && source ~/.bashrc && cd ~/CIPS-Gemini-Ethereum && ./helper.sh SendCCMsg ws://127.0.0.1:10026 contract_addresses_%d.toml %d 1 1",
-                            srcChainId, 11002);
+                            srcChainId, getChainId(dstChainType, dstIp));
                     String ethResult = SSHConfig.executeCMD(ethCmd, "UTF-8");
 
                     // 打印命令输出用于调试
@@ -546,7 +575,11 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                     }
 
                     // 等待50秒，确保日志已经生成
-                    Thread.sleep(50000);
+                    if(dstChainType.equalsIgnoreCase("bubi")){
+                        Thread.sleep(70000);
+                    }else{
+                        Thread.sleep(50000);
+                    }
 
                     // 读取以太坊日志文件
                     String ethFromCmLogCmd = "cat /root/CIPS-Gemini-Ethereum/logs/eth.log";
@@ -610,6 +643,48 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                         resultObj.put("srcRespHash", ethRespHash);
                         resultObj.put("srcReqHash", ethReqHash);
                         resultObj.put("crossChainResult", "以太坊跨长安链操作执行成功");
+                    } else if (dstChainType.equalsIgnoreCase("bubi")) {
+                        // 读取布比链日志文件
+                        String bubiLogCmd = "cat /root/CIPS-Gemini-Bubi/logs/bubi.log";
+                        String bubiLogs = SSHConfig.executeCMD(bubiLogCmd, "UTF-8");
+
+                        // 提取源链响应哈希
+                        String ethRespPattern = "get resp txhash: (0x[a-fA-F0-9]+)";
+                        Pattern ethRespRegex = Pattern.compile(ethRespPattern);
+                        Matcher ethRespMatcher = ethRespRegex.matcher(ethFromCmLogs);
+                        String ethRespHash = "";
+                        while (ethRespMatcher.find()) {
+                            ethRespHash = ethRespMatcher.group(1);
+                        }
+                        
+                        // 添加调试信息
+                        System.out.println("正在尝试匹配响应哈希...");
+                        System.out.println("使用的正则表达式: " + ethRespPattern);
+                        System.out.println("日志内容：");
+                        System.out.println(bubiLogs);
+                        
+                        while (ethRespMatcher.find()) {
+                            ethRespHash = ethRespMatcher.group(1);
+                            System.out.println("成功提取到响应哈希: " + ethRespHash);
+                        }
+                        
+                        if (ethRespHash.isEmpty()) {
+                            System.out.println("未能匹配到响应哈希");
+                        }
+
+                        // 提取目标链哈希
+                        String ethToBubiDstPattern = "contractCallGo succeed,hash=([a-fA-F0-9]+)";
+                        Pattern ethToBubiDstRegex = Pattern.compile(ethToBubiDstPattern);
+                        Matcher ethToBubiDstMatcher = ethToBubiDstRegex.matcher(bubiLogs);
+                        String ethToBubiDstHash = "";
+                        while (ethToBubiDstMatcher.find()) {
+                            ethToBubiDstHash = ethToBubiDstMatcher.group(1);
+                        }
+
+                        resultObj.put("dstHash", ethToBubiDstHash);
+                        resultObj.put("srcRespHash", ethRespHash);
+                        resultObj.put("srcReqHash", ethReqHash);
+                        resultObj.put("crossChainResult", "以太坊跨布比链操作执行成功");
                     }
                     break;
 
@@ -687,7 +762,37 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                         resultObj.put("srcRespHash", srcRespHash);
                         resultObj.put("srcReqHash", srcReqHash);
                         resultObj.put("crossChainResult", "海河链跨长安链操作执行成功");
-                    }
+                    }else if (dstChainType.equalsIgnoreCase("bubi")) {
+                        // 读取布比链日志文件
+                        String bubiLogCmd = "cat /root/CIPS-Gemini-Bubi/logs/bubi.log";
+                        String bubiLogs = SSHConfig.executeCMD(bubiLogCmd, "UTF-8");
+
+                        // 提取源链请求哈希（从bubiResult中提取）
+                        String h2cReqPattern = "Obtained request cmhash on the source chain\\(chainid: 13002, cmhash: ([a-fA-F0-9]+)\\)";
+                        Pattern h2cReqRegex = Pattern.compile(h2cReqPattern);
+                        Matcher h2cReqMatcher = h2cReqRegex.matcher(h2cSrcLogs);
+                        srcReqHash = h2cReqMatcher.find() ? h2cReqMatcher.group(1) : "";        
+                        
+                        // 提取源链响应哈希
+                        String h2cRespPattern = "\\[DEBG\\]:\\s+get resp txhash: ([a-fA-F0-9]+)";
+                        Pattern h2cRespRegex = Pattern.compile(h2cRespPattern);
+                        Matcher h2cRespMatcher = h2cRespRegex.matcher(h2cSrcLogs);
+                        srcRespHash = h2cRespMatcher.find() ? h2cRespMatcher.group(1) : "";                     
+                        
+                        // 提取目标链哈希
+                        String h2cToBubiDstPattern = "contractCallGo succeed,hash=([a-fA-F0-9]+)";
+                        Pattern h2cToBubiDstRegex = Pattern.compile(h2cToBubiDstPattern);
+                        Matcher h2cToBubiDstMatcher = h2cToBubiDstRegex.matcher(bubiLogs);
+                        String h2cToBubiDstHash = "";
+                        while (h2cToBubiDstMatcher.find()) {                                    
+                            h2cToBubiDstHash = h2cToBubiDstMatcher.group(1);
+                        }
+
+                        resultObj.put("dstHash", h2cToBubiDstHash);
+                        resultObj.put("srcRespHash", srcRespHash);
+                        resultObj.put("srcReqHash", srcReqHash);
+                        resultObj.put("crossChainResult", "海河链跨布比链操作执行成功");
+                    }       
                     break;
 
                 case "chainmaker":
@@ -696,7 +801,11 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                     String cmResult = SSHConfig.executeCMD(cmCmd, "UTF-8");
 
                     // 等待5秒，确保日志已经生成
-                    Thread.sleep(10000);
+                    if(dstChainType.equalsIgnoreCase("bubi")){
+                        Thread.sleep(40000);
+                    }else{
+                        Thread.sleep(10000);
+                    }
 
                     // 读取长安链日志文件
                     String cmFromEthLogCmd = "cat /root/CIPS-Gemini-ChainMaker/logs/chainmaker.log";
@@ -754,14 +863,230 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                         Pattern dstRegex = Pattern.compile(dstPattern);
                         Matcher dstMatcher = dstRegex.matcher(h2cLogs);
                         dstHash = dstMatcher.find() ? dstMatcher.group(1) : "";
-                    }
+                    }else if (dstChainType.equalsIgnoreCase("bubi")) {
+                        // 读取布比链日志文件
+                        String bubiLogCmd = "cat /root/CIPS-Gemini-Bubi/logs/bubi.log";
+                        String bubiLogs = SSHConfig.executeCMD(bubiLogCmd, "UTF-8");
+
+                        // 读取长安链日志文件
+                        String cmLogCmd = "cat /root/CIPS-Gemini-ChainMaker/logs/chainmaker.log";
+                        String cmLogs = SSHConfig.executeCMD(cmLogCmd, "UTF-8");
+
+                        // 执行布比链命令并获取结果
+                        String bubiCmd = "source /etc/profile && source ~/.bashrc && cd /root/CIPS-Gemini-Bubi && docker exec crossbubi_container go run main.go send";
+                        String bubiResult = SSHConfig.executeCMD(bubiCmd, "UTF-8");
+
+                        // 提取源链请求哈希（从bubiResult中提取）
+                        String bubiReqPattern = "chain: SendMsg succeed @ ([a-fA-F0-9]+)";
+                        Pattern bubiReqRegex = Pattern.compile(bubiReqPattern);
+                        Matcher bubiReqMatcher = bubiReqRegex.matcher(bubiResult);
+                        String bubiReqHash = "";
+                        if (bubiReqMatcher.find()) {
+                            bubiReqHash = bubiReqMatcher.group(1);
+                            System.out.println("成功提取到源链请求哈希: " + bubiReqHash);
+                        } else {
+                            System.out.println("未能匹配到源链请求哈希");
+                            System.out.println("使用的正则表达式: " + bubiReqPattern);
+                            System.out.println("实际输出内容：");
+                            System.out.println(bubiResult);
+                        }
+
+                        // 提取源链响应哈希
+                        String bubiRespPattern = "contractCallGo succeed,hash=([a-fA-F0-9]+)";
+                        Pattern bubiRespRegex = Pattern.compile(bubiRespPattern);
+                        Matcher bubiRespMatcher = bubiRespRegex.matcher(bubiLogs);
+                        String bubiRespHash = "";
+                        if (bubiRespMatcher.find()) {
+                            bubiRespHash = bubiRespMatcher.group(1);
+                            System.out.println("成功提取到源链响应哈希: " + bubiRespHash);
+                        } else {
+                            System.out.println("未能匹配到源链响应哈希");
+                            System.out.println("使用的正则表达式: " + bubiRespPattern);
+                            System.out.println("实际日志内容：");
+                            System.out.println(bubiLogs);
+                        }
+
+                        // 提取目标链哈希
+                        String bubiToCmDstPattern = "get req txhash: ([a-fA-F0-9]+)";
+                        Pattern bubiToCmDstRegex = Pattern.compile(bubiToCmDstPattern);
+                        Matcher bubiToCmDstMatcher = bubiToCmDstRegex.matcher(cmLogs);
+                        String bubiToCmDstHash = "";
+                        if (bubiToCmDstMatcher.find()) {
+                            bubiToCmDstHash = bubiToCmDstMatcher.group(1);
+                            System.out.println("成功提取到目标链哈希: " + bubiToCmDstHash);
+                        } else {
+                            System.out.println("未能匹配到目标链哈希");
+                            System.out.println("使用的正则表达式: " + bubiToCmDstPattern);
+                            System.out.println("实际日志内容：");
+                            System.out.println(cmLogs);
+                        }
+
+                        resultObj.put("srcReqHash", bubiReqHash);
+                        resultObj.put("srcRespHash", bubiRespHash);
+                        resultObj.put("dstHash", bubiToCmDstHash);
+                        resultObj.put("crossChainResult", "布比链跨长安链操作执行成功");
+                    }   
 
                     resultObj.put("dstHash", dstHash);
                     resultObj.put("srcRespHash", srcRespHash);
                     resultObj.put("srcReqHash", srcReqHash);
                     resultObj.put("crossChainResult", "长安链跨链操作执行成功");
                     break;
+                case "bubi":
+                    // 执行布比链跨链命令
+                    String bubiCmd = "source /etc/profile && source ~/.bashrc && cd /root/CIPS-Gemini-Bubi && docker exec crossbubi_container go run main.go send";
+                    String bubiResult = SSHConfig.executeCMD(bubiCmd, "UTF-8");
 
+                    // 打印命令输出用于调试
+                    System.out.println("命令完整输出：");
+                    System.out.println(bubiResult);
+                    if(dstChainType.equalsIgnoreCase("ethereum")){
+                    // 等待跨链操作完成
+                    Thread.sleep(50000);
+                    }else{
+                        // 等待跨链操作完成
+                        Thread.sleep(70000);
+                    }
+                    // 读取布比链日志文件
+                    String bubiLogCmd = "cat /root/CIPS-Gemini-Bubi/logs/bubi.log";
+                    String bubiLogs = SSHConfig.executeCMD(bubiLogCmd, "UTF-8");
+
+                    // 连接目标链服务器
+                    SSHConfig.connect(dstIp);
+
+                    if (dstChainType.equalsIgnoreCase("chainmaker")) {
+                        // 读取长安链日志文件
+                        String cmLogCmd = "cat /root/CIPS-Gemini-ChainMaker/logs/chainmaker.log";
+                        String cmLogs = SSHConfig.executeCMD(cmLogCmd, "UTF-8");
+
+                        // 提取源链请求哈希（从bubiResult中提取）
+                        String bubiReqPattern = "chain: SendMsg succeed @ ([a-fA-F0-9]+)";
+                        Pattern bubiReqRegex = Pattern.compile(bubiReqPattern);
+                        Matcher bubiReqMatcher = bubiReqRegex.matcher(bubiResult);
+                        String bubiReqHash = "";
+                        if (bubiReqMatcher.find()) {
+                            bubiReqHash = bubiReqMatcher.group(1);
+                            System.out.println("成功提取到源链请求哈希: " + bubiReqHash);
+                        } else {
+                            System.out.println("未能匹配到源链请求哈希");
+                            System.out.println("使用的正则表达式: " + bubiReqPattern);
+                            System.out.println("实际输出内容：");
+                            System.out.println(bubiResult);
+                        }
+
+                        // 提取源链响应哈希
+                        String bubiRespPattern = "contractCallGo succeed,hash=([a-fA-F0-9]+)";
+                        Pattern bubiRespRegex = Pattern.compile(bubiRespPattern);
+                        Matcher bubiRespMatcher = bubiRespRegex.matcher(bubiLogs);
+                        String bubiRespHash = "";
+                        if (bubiRespMatcher.find()) {
+                            bubiRespHash = bubiRespMatcher.group(1);
+                            System.out.println("成功提取到源链响应哈希: " + bubiRespHash);
+                        } else {
+                            System.out.println("未能匹配到源链响应哈希");
+                            System.out.println("使用的正则表达式: " + bubiRespPattern);
+                            System.out.println("实际日志内容：");
+                            System.out.println(bubiLogs);
+                        }
+
+                        // 提取目标链哈希
+                        String bubiToCmDstPattern = "get req txhash: ([a-fA-F0-9]+)";
+                        Pattern bubiToCmDstRegex = Pattern.compile(bubiToCmDstPattern);
+                        Matcher bubiToCmDstMatcher = bubiToCmDstRegex.matcher(cmLogs);
+                        String bubiToCmDstHash = "";
+                        if (bubiToCmDstMatcher.find()) {
+                            bubiToCmDstHash = bubiToCmDstMatcher.group(1);
+                            System.out.println("成功提取到目标链哈希: " + bubiToCmDstHash);
+                        } else {
+                            System.out.println("未能匹配到目标链哈希");
+                            System.out.println("使用的正则表达式: " + bubiToCmDstPattern);
+                            System.out.println("实际日志内容：");
+                            System.out.println(cmLogs);
+                        }
+
+                        resultObj.put("srcReqHash", bubiReqHash);
+                        resultObj.put("srcRespHash", bubiRespHash);
+                        resultObj.put("dstHash", bubiToCmDstHash);
+                        resultObj.put("crossChainResult", "布比链跨长安链操作执行成功");
+
+                    } else if (dstChainType.equalsIgnoreCase("ethereum")) {
+                        // 读取以太坊日志文件
+                        String ethLogCmd = "cat /root/CIPS-Gemini-Ethereum/logs/eth.log";
+                        String ethLogs = SSHConfig.executeCMD(ethLogCmd, "UTF-8");
+
+                        // 提取源链请求哈希（从bubiResult中提取）
+                        String bubiReqPattern = "chain: SendMsg succeed @ ([a-fA-F0-9]+)";
+                        Pattern bubiReqRegex = Pattern.compile(bubiReqPattern);
+                        Matcher bubiReqMatcher = bubiReqRegex.matcher(bubiResult);
+                        String bubiReqHash = "";
+                        if (bubiReqMatcher.find()) {
+                            bubiReqHash = bubiReqMatcher.group(1);
+                            System.out.println("成功提取到源链请求哈希: " + bubiReqHash);
+                        } else {
+                            System.out.println("未能匹配到源链请求哈希");
+                            System.out.println("使用的正则表达式: " + bubiReqPattern);
+                            System.out.println("实际输出内容：");
+                            System.out.println(bubiResult);
+                        }
+
+                        // 提取源链响应哈希
+                        String bubiRespPattern = "\\[DEBG\\]:\\s*contractCallGo succeed,hash=([a-fA-F0-9]+)";
+                        Pattern bubiRespRegex = Pattern.compile(bubiRespPattern);
+                        Matcher bubiRespMatcher = bubiRespRegex.matcher(bubiLogs);
+                        String bubiRespHash = bubiRespMatcher.find() ? bubiRespMatcher.group(1) : "";
+
+                        // 提取目标链哈希
+                        String bubiToEthDstPattern = "get req txhash: (0x[a-fA-F0-9]+)";
+                        Pattern bubiToEthDstRegex = Pattern.compile(bubiToEthDstPattern);
+                        Matcher bubiToEthDstMatcher = bubiToEthDstRegex.matcher(ethLogs);
+                        String bubiToEthDstHash = bubiToEthDstMatcher.find() ? bubiToEthDstMatcher.group(1) : "";
+
+                        resultObj.put("srcReqHash", bubiReqHash);
+                        resultObj.put("srcRespHash", bubiRespHash);
+                        resultObj.put("dstHash", bubiToEthDstHash);
+                        resultObj.put("crossChainResult", "布比链跨以太坊操作执行成功");
+
+                    } else if (dstChainType.equalsIgnoreCase("h2chain")) {
+                        // 读取海河链日志文件
+                        String h2cLogCmd = "cat /root/CIPS-Gemini-H2Chain/logs/h2chain.log";
+                        String h2cLogs = SSHConfig.executeCMD(h2cLogCmd, "UTF-8");
+
+                        // 提取源链请求哈希（从bubiResult中提取）
+                        String bubiReqPattern = "chain: SendMsg succeed @ ([a-fA-F0-9]+)";
+                        Pattern bubiReqRegex = Pattern.compile(bubiReqPattern);
+                        Matcher bubiReqMatcher = bubiReqRegex.matcher(bubiResult);
+                        String bubiReqHash = "";
+                        if (bubiReqMatcher.find()) {
+                            bubiReqHash = bubiReqMatcher.group(1);
+                            System.out.println("成功提取到源链请求哈希: " + bubiReqHash);
+                        } else {
+                            System.out.println("未能匹配到源链请求哈希");
+                            System.out.println("使用的正则表达式: " + bubiReqPattern);
+                            System.out.println("实际输出内容：");
+                            System.out.println(bubiResult);
+                        }
+
+                        // 提取源链响应哈希
+                        String bubiRespPattern = "\\[DEBG\\]:\\s*contractCallGo succeed,hash=([a-fA-F0-9]+)";
+                        Pattern bubiRespRegex = Pattern.compile(bubiRespPattern);
+                        Matcher bubiRespMatcher = bubiRespRegex.matcher(bubiLogs);
+                        String bubiRespHash = bubiRespMatcher.find() ? bubiRespMatcher.group(1) : "";
+
+                        // 提取目标链哈希
+                        String bubiToH2cDstPattern = "get req txhash: ([a-fA-F0-9]+)";
+                        Pattern bubiToH2cDstRegex = Pattern.compile(bubiToH2cDstPattern);
+                        Matcher bubiToH2cDstMatcher = bubiToH2cDstRegex.matcher(h2cLogs);
+                        String bubiToH2cDstHash = bubiToH2cDstMatcher.find() ? bubiToH2cDstMatcher.group(1) : "";
+
+                        resultObj.put("srcReqHash", bubiReqHash);
+                        resultObj.put("srcRespHash", bubiRespHash);
+                        resultObj.put("dstHash", bubiToH2cDstHash);
+                        resultObj.put("crossChainResult", "布比链跨海河链操作执行成功");
+                    }
+                    break;
+                    
+               
+                    
                 default:
                     throw new IllegalArgumentException("不支持的源链类型: " + srcChainType);
             }

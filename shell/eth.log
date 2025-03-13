@@ -1,45 +1,59 @@
 Starting relayer with configuration file: config.toml
-[32m2025-03-10 03:21:36	[INFO]:	Relayer started...[39m
-[32m2025-03-10 03:21:36	[INFO]:	Reading config file...[39m
-[32m2025-03-10 03:21:36	[INFO]:	Config file read successfully.[39m
-[32m2025-03-10 03:21:36	[INFO]:	Loading config...[39m
-[32m2025-03-10 03:21:36	[INFO]:	Config loaded successfully.[39m
-[34m2025-03-10 03:21:36	[DEBG]:	Relayer config Aggregator_addr: 0x56E27D4dd765d2632B927Dd049CC70baC333dF4d[39m
-[34m2025-03-10 03:21:36	[DEBG]:	Relayer config Transport_addr: 0xDA99Fc6cdd13E306143498DB0637cCe983d2375e[39m
-[32m2025-03-10 03:21:36	[INFO]:	Registering contracts...[39m
-[32m2025-03-10 03:21:36	[INFO]:	Registering gateways...[39m
-[34m2025-03-10 03:21:36	[DEBG]:	relayer.aggregator_addr: 0x56E27D4dd765d2632B927Dd049CC70baC333dF4d[39m
-[34m2025-03-10 03:21:36	[DEBG]:	relayer.transport_addr: 0xDA99Fc6cdd13E306143498DB0637cCe983d2375e[39m
-[32m2025-03-10 03:21:36	[INFO]:	Initializing relayer...[39m
-[32m2025-03-10 03:21:36	[INFO]:	Running relayer...[39m
-[32m2025-03-10 03:21:36	[INFO]:	Chain ID - 12002 : relayer started...[39m
-[32m2025-03-10 03:21:36	[INFO]:	<nil>: start verification protocol: 1[39m
-[32m2025-03-10 03:21:36	[INFO]:	<nil>: start verification protocol: 2[39m
-[34m2025-03-10 03:21:36	[DEBG]:	<nil>: start verification layer watch_q_req_tspt_vrfy thread![39m
-[34m2025-03-10 03:21:36	[DEBG]:	<nil>: start verification layer watch_q_req_pre_tspt_vrfy thread![39m
-[34m2025-03-10 03:21:36	[DEBG]:	<nil>: start verification layer watch_q_resp_tspt_vrfy thread![39m
-[34m2025-03-10 03:21:36	[DEBG]:	<nil>: start verification layer watch_q_resp_pre_tspt_vrfy thread![39m
-[32m2025-03-10 03:21:36	[INFO]:	SPV update: XXX[39m
-[32m2025-03-10 03:21:36	[INFO]:	Notary update: XXX[39m
-[32m2025-03-10 03:21:37	[INFO]:	Chain ID - 12002 : relayer_verification started successfully.[39m
-[32m2025-03-10 03:21:37	[INFO]:	12002: start transport layer watch thread![39m
-[32m2025-03-10 03:21:37	[INFO]:	12002: start transport layer gateway server thread! url: http://0.0.0.0:8086[39m
-[32m2025-03-10 03:21:37	[INFO]:	12002: start transport layer sendReqToTargetRelay thread![39m
-[32m2025-03-10 03:21:37	[INFO]:	12002: start transport layer sendRespToSourceRelay thread![39m
-[32m2025-03-10 03:21:37	[INFO]:	12002: start transport layer sendReqToTargetChain thread![39m
-[32m2025-03-10 03:21:37	[INFO]:	12002: start transport layer sendRespToSourceChain thread![39m
-[32m2025-03-10 03:21:37	[INFO]:	12002: start transport layer dealReqTxHashes thread![39m
-[32m2025-03-10 03:21:37	[INFO]:	12002: start transport layer dealRespTxHashes thread![39m
-[32m2025-03-10 03:21:38	[INFO]:	Chain ID - 12002 : relayer_transport started successfully.[39m
-[36m2025-03-10 03:22:02	[OK]:	Obtained request cmhash on the source chain(chainid: 12002, cmhash: fb71aa3630bc6314972e562c8e408b622aea52d4f40a39339a023ebc50227ea8)
+[32m2025-03-12 10:36:04	[INFO]:	Relayer started...[39m
+[32m2025-03-12 10:36:04	[INFO]:	Reading config file...[39m
+[32m2025-03-12 10:36:04	[INFO]:	Config file read successfully.[39m
+[32m2025-03-12 10:36:04	[INFO]:	Loading config...[39m
+[32m2025-03-12 10:36:04	[INFO]:	Config loaded successfully.[39m
+[34m2025-03-12 10:36:04	[DEBG]:	Relayer config Aggregator_addr: 0x56E27D4dd765d2632B927Dd049CC70baC333dF4d[39m
+[34m2025-03-12 10:36:04	[DEBG]:	Relayer config Transport_addr: 0xDA99Fc6cdd13E306143498DB0637cCe983d2375e[39m
+[32m2025-03-12 10:36:04	[INFO]:	Registering contracts...[39m
+[32m2025-03-12 10:36:04	[INFO]:	Registering gateways...[39m
+[34m2025-03-12 10:36:04	[DEBG]:	relayer.aggregator_addr: 0x56E27D4dd765d2632B927Dd049CC70baC333dF4d[39m
+[34m2025-03-12 10:36:04	[DEBG]:	relayer.transport_addr: 0xDA99Fc6cdd13E306143498DB0637cCe983d2375e[39m
+[32m2025-03-12 10:36:04	[INFO]:	Initializing relayer...[39m
+[32m2025-03-12 10:36:04	[INFO]:	Running relayer...[39m
+[32m2025-03-12 10:36:04	[INFO]:	Chain ID - 12002 : relayer started...[39m
+[32m2025-03-12 10:36:04	[INFO]:	<nil>: start verification protocol: 1[39m
+[32m2025-03-12 10:36:04	[INFO]:	<nil>: start verification protocol: 2[39m
+[34m2025-03-12 10:36:04	[DEBG]:	<nil>: start verification layer watch_q_req_tspt_vrfy thread![39m
+[32m2025-03-12 10:36:04	[INFO]:	SPV update: XXX[39m
+[32m2025-03-12 10:36:04	[INFO]:	Notary update: XXX[39m
+[34m2025-03-12 10:36:04	[DEBG]:	<nil>: start verification layer watch_q_req_pre_tspt_vrfy thread![39m
+[34m2025-03-12 10:36:04	[DEBG]:	<nil>: start verification layer watch_q_resp_tspt_vrfy thread![39m
+[34m2025-03-12 10:36:04	[DEBG]:	<nil>: start verification layer watch_q_resp_pre_tspt_vrfy thread![39m
+[32m2025-03-12 10:36:05	[INFO]:	Chain ID - 12002 : relayer_verification started successfully.[39m
+[32m2025-03-12 10:36:05	[INFO]:	12002: start transport layer watch thread![39m
+[32m2025-03-12 10:36:05	[INFO]:	12002: start transport layer gateway server thread! url: http://0.0.0.0:8086[39m
+[32m2025-03-12 10:36:05	[INFO]:	12002: start transport layer sendReqToTargetRelay thread![39m
+[32m2025-03-12 10:36:05	[INFO]:	12002: start transport layer sendRespToSourceRelay thread![39m
+[32m2025-03-12 10:36:05	[INFO]:	12002: start transport layer sendReqToTargetChain thread![39m
+[32m2025-03-12 10:36:05	[INFO]:	12002: start transport layer sendRespToSourceChain thread![39m
+[32m2025-03-12 10:36:05	[INFO]:	12002: start transport layer dealReqTxHashes thread![39m
+[32m2025-03-12 10:36:05	[INFO]:	12002: start transport layer dealRespTxHashes thread![39m
+[32m2025-03-12 10:36:06	[INFO]:	Chain ID - 12002 : relayer_transport started successfully.[39m
+[36m2025-03-12 10:36:31	[OK]:	Obtained request cmhash on the source chain(chainid: 12002, cmhash: 2fa96e4a82c6de3c77646e80e4ef3e37fd4ede3ce8d91c602a5bb4a49a365a6d)
 [39m
-[32m2025-03-10 03:22:02	[INFO]:	12002: Watch: send cm to q_req_tspt_vrfy[39m
-[34m2025-03-10 03:22:02	[DEBG]:	<nil>: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
-[32m2025-03-10 03:22:02	[INFO]:	<nil>: generate proof for req cm(3): [112 114 111 111 102 32 111 102 32 83 80 86][39m
-[34m2025-03-10 03:22:02	[DEBG]:	<nil>: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
-[32m2025-03-10 03:22:02	[INFO]:	12002: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
-[34m2025-03-10 03:22:02	[DEBG]:	30000: relayerChainIDStr[39m
-[32m2025-03-10 03:22:02	[INFO]:	12002: SendReqToTargetRelay: send cm with proof to gateway[39m
-[32m2025-03-10 03:22:02	[INFO]:	12002: SendReqToTargetRelay: send cm with proof to gateway successfully get response[39m
-[32m2025-03-10 03:23:16	[INFO]:	Notary update: XXX[39m
-[32m2025-03-10 03:23:16	[INFO]:	SPV update: XXX[39m
+[32m2025-03-12 10:36:31	[INFO]:	12002: Watch: send cm to q_req_tspt_vrfy[39m
+[34m2025-03-12 10:36:31	[DEBG]:	<nil>: watch_q_req_tspt_vrfy: get cm from q_req_tspt_vrfy[39m
+[32m2025-03-12 10:36:31	[INFO]:	<nil>: generate proof for req cm(14): [112 114 111 111 102 32 111 102 32 83 80 86][39m
+[34m2025-03-12 10:36:31	[DEBG]:	<nil>: watch_q_req_tspt_vrfy: send cm with proof to q_req_vrfy_tspt[39m
+[32m2025-03-12 10:36:31	[INFO]:	12002: SendReqToTargetRelay: get cm with proof from q_req_vrfy_tspt[39m
+[34m2025-03-12 10:36:31	[DEBG]:	30000: relayerChainIDStr[39m
+[32m2025-03-12 10:36:31	[INFO]:	12002: SendReqToTargetRelay: send cm with proof to gateway[39m
+[32m2025-03-12 10:36:31	[INFO]:	12002: SendReqToTargetRelay: send cm with proof to gateway successfully get response[39m
+[34m2025-03-12 10:37:32	[DEBG]:	12002: cmresp handler get request from /cm/resp[39m
+[34m2025-03-12 10:37:32	[DEBG]:	12002: ReceivceRespCmFromOthers: send item to q_resp_pre_tspt_vrfy[39m
+[32m2025-03-12 10:37:32	[INFO]:	12002: cmresp handler response successfully, from /cm/resp[39m
+[34m2025-03-12 10:37:32	[DEBG]:	<nil>: watch_q_resp_pre_tspt_vrfy: get cm with proof from q_resp_pre_tspt_vrfy[39m
+[34m2025-03-12 10:37:32	[DEBG]:	<nil>: watch_q_resp_pre_tspt_vrfy: send cm with proof to q_resp_pre_vrfy_tspt[39m
+[32m2025-03-12 10:37:32	[INFO]:	12002: SendRespToSourceChain: get cm with proof from q_resp_pre_vrfy_tspt[39m
+[32m2025-03-12 10:37:33	[INFO]:	12002: SendRespToSourceChain: send txhash to q_resp_txhashes[39m
+[34m2025-03-12 10:37:33	[DEBG]:	12002: DealRespTxHashes: get txhash from q_resp_txhashes[39m
+[32m2025-03-12 10:37:33	[INFO]:	get resp txhash: 0x8b7d860c3f91a3d69799423fe3557673229f61e7fc489a3e89649489b2d48063
+[39m
+[36m2025-03-12 10:37:38	[OK]:	Obtained ack cmhash on the source chain(chainid: 12002, cmhash: 2fa96e4a82c6de3c77646e80e4ef3e37fd4ede3ce8d91c602a5bb4a49a365a6d)
+[39m
+[32m2025-03-12 10:37:44	[INFO]:	Notary update: XXX[39m
+[32m2025-03-12 10:37:44	[INFO]:	SPV update: XXX[39m
+[32m2025-03-12 10:39:24	[INFO]:	Notary update: XXX[39m
+[32m2025-03-12 10:39:24	[INFO]:	SPV update: XXX[39m
