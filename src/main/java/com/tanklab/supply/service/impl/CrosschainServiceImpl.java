@@ -940,13 +940,10 @@ public class CrosschainServiceImpl extends ServiceImpl<CrosschainMapper, Crossch
                     // 打印命令输出用于调试
                     System.out.println("命令完整输出：");
                     System.out.println(bubiResult);
-                    if(dstChainType.equalsIgnoreCase("ethereum")){
-                    // 等待跨链操作完成
-                    Thread.sleep(50000);
-                    }else{
+                    
                         // 等待跨链操作完成
                         Thread.sleep(70000);
-                    }
+                    
                     // 读取布比链日志文件
                     String bubiLogCmd = "cat /root/CIPS-Gemini-Bubi/logs/bubi.log";
                     String bubiLogs = SSHConfig.executeCMD(bubiLogCmd, "UTF-8");
